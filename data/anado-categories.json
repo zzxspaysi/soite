@@ -1,0 +1,837 @@
+{
+  "source_url": "https://anado.ru/",
+  "captured_at_utc": "2026-10-23T14:23:58.576783+00:00",
+  "source_html_sha256": "7c6756e21b372a0ca8d432d351780e44ad3b0791d0a8cf8abd7b1a0065dd6c55",
+  "scope": "All categories and subcategories present in ANADO homepage catalog navigation, in source order. Product records have not been extracted.",
+  "category_source": "ANADO only",
+  "design_reference": "https://www.atol.ru/",
+  "top_level_count": 19,
+  "subcategory_count": 112,
+  "category_url_count": 131,
+  "observed_product_counts_are_not_unique_product_totals": true,
+  "categories": [
+    {
+      "name": "ОНЛАЙН КАССЫ. ККТ. 54 ФЗ",
+      "source_url": "https://anado.ru/products/category/online-kassy/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Онлайн кассы",
+          "source_url": "https://anado.ru/products/category/online-kassy/onkassy/",
+          "observed_product_count": 62,
+          "children": []
+        },
+        {
+          "name": "Касса самообслуживания КСО",
+          "source_url": "https://anado.ru/products/category/online-kassy/kso/",
+          "observed_product_count": 10,
+          "children": []
+        },
+        {
+          "name": "Комплексы для интернет торговли",
+          "source_url": "https://anado.ru/products/category/online-kassy/kass-kompl-internet-torg/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Фискальные накопители",
+          "source_url": "https://anado.ru/products/category/online-kassy/fiskal-nak/",
+          "observed_product_count": 2,
+          "children": []
+        },
+        {
+          "name": "Лицензии для ККТ",
+          "source_url": "https://anado.ru/products/category/online-kassy/licenzii-kkt/",
+          "observed_product_count": 6,
+          "children": []
+        },
+        {
+          "name": "Операторы фискальных данных (ОФД)",
+          "source_url": "https://anado.ru/products/category/online-kassy/ofd/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/online-kassy/category_111/",
+          "observed_product_count": 18,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/online-kassy/arhivkkm/",
+          "observed_product_count": 153,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 543
+    },
+    {
+      "name": "РАСПРОДАЖА - SALE",
+      "source_url": "https://anado.ru/products/category/category_369/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Фискальные регистраторы, Кассовые аппараты",
+          "source_url": "https://anado.ru/products/category/category_369/rasfisc/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "Принтеры этикеток",
+          "source_url": "https://anado.ru/products/category/category_369/raspriet/",
+          "observed_product_count": 8,
+          "children": []
+        },
+        {
+          "name": "Сканеры штрих-кода",
+          "source_url": "https://anado.ru/products/category/category_369/rasscan/",
+          "observed_product_count": 7,
+          "children": []
+        },
+        {
+          "name": "Терминалы сбора данных",
+          "source_url": "https://anado.ru/products/category/category_369/rastsd/",
+          "observed_product_count": 5,
+          "children": []
+        },
+        {
+          "name": "POS-системы, POS-периферия",
+          "source_url": "https://anado.ru/products/category/category_369/raspos/",
+          "observed_product_count": 7,
+          "children": []
+        },
+        {
+          "name": "Весы",
+          "source_url": "https://anado.ru/products/category/category_369/rasves/",
+          "observed_product_count": 7,
+          "children": []
+        },
+        {
+          "name": "Чековые принтеры",
+          "source_url": "https://anado.ru/products/category/category_369/raschek/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "Программное обеспечение",
+          "source_url": "https://anado.ru/products/category/category_369/rasprog/",
+          "observed_product_count": 2,
+          "children": []
+        },
+        {
+          "name": "Банковское оборудование",
+          "source_url": "https://anado.ru/products/category/category_369/rasbank/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "ЗИП",
+          "source_url": "https://anado.ru/products/category/category_369/ZIP/",
+          "observed_product_count": 36,
+          "children": []
+        },
+        {
+          "name": "Платежные терминалы, платежные решения",
+          "source_url": "https://anado.ru/products/category/category_369/rasplat/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "Расходные материалы",
+          "source_url": "https://anado.ru/products/category/category_369/rasras/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/category_369/rasarhiv/",
+          "observed_product_count": 97,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 369
+    },
+    {
+      "name": "ПРИНТЕРЫ",
+      "source_url": "https://anado.ru/products/category/printland/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Принтеры этикеток",
+          "source_url": "https://anado.ru/products/category/printland/category_11/",
+          "observed_product_count": 172,
+          "children": []
+        },
+        {
+          "name": "Принтеры чеков",
+          "source_url": "https://anado.ru/products/category/printland/print_22/",
+          "observed_product_count": 26,
+          "children": []
+        },
+        {
+          "name": "Принтеры пластиковых карт",
+          "source_url": "https://anado.ru/products/category/printland/printerplask/",
+          "observed_product_count": 26,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/printland/category_12/",
+          "observed_product_count": 305,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/printland/printold/",
+          "observed_product_count": 470,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 392
+    },
+    {
+      "name": "СКАНЕРЫ, ТСД, РИДЕРЫ, ЭНКОДЕРЫ",
+      "source_url": "https://anado.ru/products/category/ident/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Сканеры штрих-кодов с ИИ",
+          "source_url": "https://anado.ru/products/category/ident/scan-with-ai/",
+          "observed_product_count": 2,
+          "children": []
+        },
+        {
+          "name": "Сканеры штрих-кодов",
+          "source_url": "https://anado.ru/products/category/ident/category_100/",
+          "observed_product_count": 134,
+          "children": []
+        },
+        {
+          "name": "Терминалы сбора данных (ТСД)",
+          "source_url": "https://anado.ru/products/category/ident/tsd/",
+          "observed_product_count": 141,
+          "children": []
+        },
+        {
+          "name": "Считыватели магнитных карт",
+          "source_url": "https://anado.ru/products/category/ident/riders/",
+          "observed_product_count": 13,
+          "children": []
+        },
+        {
+          "name": "Энкодеры",
+          "source_url": "https://anado.ru/products/category/ident/encoders/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "Щелевые сканеры штрих-кода",
+          "source_url": "https://anado.ru/products/category/ident/category_159/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Прайс-чекеры",
+          "source_url": "https://anado.ru/products/category/ident/price-checker/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "Считыватели",
+          "source_url": "https://anado.ru/products/category/ident/readers/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/ident/pcategory_02/",
+          "observed_product_count": 161,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/ident/pkategory_01/",
+          "observed_product_count": 565,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 394
+    },
+    {
+      "name": "УСЛУГИ",
+      "source_url": "https://anado.ru/products/category/uslugi/",
+      "observed_product_count": null,
+      "children": [],
+      "legacy_category_id": 564
+    },
+    {
+      "name": "ПОС (POS)-СИСТЕМЫ, ПОС-КОМПЛЕКТЫ",
+      "source_url": "https://anado.ru/products/category/pos_sistems/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "ПОС (POS)-системы",
+          "source_url": "https://anado.ru/products/category/pos_sistems/pos_systems/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "ПОС (POS)-комплекты",
+          "source_url": "https://anado.ru/products/category/pos_sistems/poskomplekt/",
+          "observed_product_count": 10,
+          "children": []
+        },
+        {
+          "name": "Комплексные системы автоматизации",
+          "source_url": "https://anado.ru/products/category/pos_sistems/category_1110/",
+          "observed_product_count": 0,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/pos_sistems/archive/",
+          "observed_product_count": 141,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 395
+    },
+    {
+      "name": "ПОС (POS)-ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/pos_oborud/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "ПОС (POS)-мониторы",
+          "source_url": "https://anado.ru/products/category/pos_oborud/pos_monitor/",
+          "observed_product_count": 9,
+          "children": []
+        },
+        {
+          "name": "ПОС (POS)-терминалы, моноблоки",
+          "source_url": "https://anado.ru/products/category/pos_oborud/pos_terminal/",
+          "observed_product_count": 16,
+          "children": []
+        },
+        {
+          "name": "ПОС (POS)-компьютеры",
+          "source_url": "https://anado.ru/products/category/pos_oborud/category_363/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/pos_oborud/category_1112/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/pos_oborud/posobor_old/",
+          "observed_product_count": 187,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 396
+    },
+    {
+      "name": "ПОС (POS)-ПЕРИФЕРИЯ",
+      "source_url": "https://anado.ru/products/category/pos_perifer/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Денежные ящики",
+          "source_url": "https://anado.ru/products/category/pos_perifer/category_340/",
+          "observed_product_count": 27,
+          "children": []
+        },
+        {
+          "name": "Дисплеи покупателя",
+          "source_url": "https://anado.ru/products/category/pos_perifer/dyspleypok/",
+          "observed_product_count": 9,
+          "children": []
+        },
+        {
+          "name": "ПОС (POS)-клавиатуры",
+          "source_url": "https://anado.ru/products/category/pos_perifer/posklaviatura/",
+          "observed_product_count": 16,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/pos_perifer/category_121/",
+          "observed_product_count": 10,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/pos_perifer/pos-per-archive/",
+          "observed_product_count": 81,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 397
+    },
+    {
+      "name": "ВЕСОВОЕ ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/vesovoe_oborud/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Весы электронные торговые",
+          "source_url": "https://anado.ru/products/category/vesovoe_oborud/vesi1/",
+          "observed_product_count": 183,
+          "children": []
+        },
+        {
+          "name": "Весы фасовочные",
+          "source_url": "https://anado.ru/products/category/vesovoe_oborud/vesy-fasovochnye/",
+          "observed_product_count": 12,
+          "children": []
+        },
+        {
+          "name": "Весы с печатью этикеток",
+          "source_url": "https://anado.ru/products/category/vesovoe_oborud/vesy-print/",
+          "observed_product_count": 32,
+          "children": []
+        },
+        {
+          "name": "Весовые терминалы",
+          "source_url": "https://anado.ru/products/category/vesovoe_oborud/vesovye-terminaly/",
+          "observed_product_count": 10,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/vesovoe_oborud/dopacss-for-vesy/",
+          "observed_product_count": 7,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/vesovoe_oborud/vesi-arhiv/",
+          "observed_product_count": 344,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 399
+    },
+    {
+      "name": "БАНКОВСКОЕ ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/bank_oborud/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Детекторы банкнот",
+          "source_url": "https://anado.ru/products/category/bank_oborud/detectors/",
+          "observed_product_count": 50,
+          "children": []
+        },
+        {
+          "name": "Счетчики банкнот",
+          "source_url": "https://anado.ru/products/category/bank_oborud/schotcupur/",
+          "observed_product_count": 46,
+          "children": []
+        },
+        {
+          "name": "Счетчики монет",
+          "source_url": "https://anado.ru/products/category/bank_oborud/schetmonet/",
+          "observed_product_count": 35,
+          "children": []
+        },
+        {
+          "name": "Упаковщики банкнот",
+          "source_url": "https://anado.ru/products/category/bank_oborud/pack_bank/",
+          "observed_product_count": 16,
+          "children": []
+        },
+        {
+          "name": "Счетчики пластиковых карт",
+          "source_url": "https://anado.ru/products/category/bank_oborud/count-plastic-cards/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Системы управления очередью и оценки качества работы",
+          "source_url": "https://anado.ru/products/category/bank_oborud/systems-of-query-control/",
+          "observed_product_count": 8,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/bank_oborud/category_1010/",
+          "observed_product_count": 43,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/bank_oborud/archive5/",
+          "observed_product_count": 382,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 398
+    },
+    {
+      "name": "ПЛАТЕЖНЫЕ РЕШЕНИЯ",
+      "source_url": "https://anado.ru/products/category/equaring/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Эквайринг терминалы",
+          "source_url": "https://anado.ru/products/category/equaring/category_197/",
+          "observed_product_count": 19,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства к платежным терминалам",
+          "source_url": "https://anado.ru/products/category/equaring/dopplat/",
+          "observed_product_count": 55,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/equaring/platarhiv/",
+          "observed_product_count": 19,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 473
+    },
+    {
+      "name": "МАРКИРОВОЧНОЕ ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/markirov/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Аппликаторы этикеток",
+          "source_url": "https://anado.ru/products/category/markirov/applicator/",
+          "observed_product_count": 7,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/markirov/dopoln/",
+          "observed_product_count": 2,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/markirov/archive/",
+          "observed_product_count": 15,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 400
+    },
+    {
+      "name": "РАСХОДНЫЕ МАТЕРИАЛЫ",
+      "source_url": "https://anado.ru/products/category/rashodniki/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Чековая лента",
+          "source_url": "https://anado.ru/products/category/rashodniki/receipt_paper/",
+          "observed_product_count": 12,
+          "children": []
+        },
+        {
+          "name": "Самоклеящиеся этикетки",
+          "source_url": "https://anado.ru/products/category/rashodniki/category_1053/",
+          "observed_product_count": 50,
+          "children": []
+        },
+        {
+          "name": "Термотрансферная лента (риббоны)",
+          "source_url": "https://anado.ru/products/category/rashodniki/ribbons/",
+          "observed_product_count": 255,
+          "children": []
+        },
+        {
+          "name": "Лента для этикеток",
+          "source_url": "https://anado.ru/products/category/rashodniki/etiket-lenta/",
+          "observed_product_count": 55,
+          "children": []
+        },
+        {
+          "name": "Лента для ярлыков",
+          "source_url": "https://anado.ru/products/category/rashodniki/category_textile/",
+          "observed_product_count": 33,
+          "children": []
+        },
+        {
+          "name": "Монохромные ленты",
+          "source_url": "https://anado.ru/products/category/rashodniki/monochrom_ribbons/",
+          "observed_product_count": 20,
+          "children": []
+        },
+        {
+          "name": "Ленты для полноцветной печати",
+          "source_url": "https://anado.ru/products/category/rashodniki/panel-color-ribbon/",
+          "observed_product_count": 41,
+          "children": []
+        },
+        {
+          "name": "Вакуумная упаковка",
+          "source_url": "https://anado.ru/products/category/rashodniki/vakuum-upakovka/",
+          "observed_product_count": 12,
+          "children": []
+        },
+        {
+          "name": "Другие расходные материалы",
+          "source_url": "https://anado.ru/products/category/rashodniki/other-materials/",
+          "observed_product_count": 2,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/rashodniki/arhivrash/",
+          "observed_product_count": 153,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 401
+    },
+    {
+      "name": "ПРОТИВОКРАЖНОЕ ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/protivkrajy/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Сейфы",
+          "source_url": "https://anado.ru/products/category/protivkrajy/safe/",
+          "observed_product_count": 81,
+          "children": []
+        },
+        {
+          "name": "Противокражные системы",
+          "source_url": "https://anado.ru/products/category/protivkrajy/systems/",
+          "observed_product_count": 25,
+          "children": []
+        },
+        {
+          "name": "Деактиваторы",
+          "source_url": "https://anado.ru/products/category/protivkrajy/deactivators/",
+          "observed_product_count": 28,
+          "children": []
+        },
+        {
+          "name": "Съемники",
+          "source_url": "https://anado.ru/products/category/protivkrajy/syomnik/",
+          "observed_product_count": 13,
+          "children": []
+        },
+        {
+          "name": "Радиочастотные метки",
+          "source_url": "https://anado.ru/products/category/protivkrajy/radio_metki/",
+          "observed_product_count": 49,
+          "children": []
+        },
+        {
+          "name": "Акустомагнитные метки",
+          "source_url": "https://anado.ru/products/category/protivkrajy/acustic/",
+          "observed_product_count": 47,
+          "children": []
+        },
+        {
+          "name": "Темпокассы",
+          "source_url": "https://anado.ru/products/category/protivkrajy/tempokassy/",
+          "observed_product_count": 10,
+          "children": []
+        },
+        {
+          "name": "Электронные системы контроля",
+          "source_url": "https://anado.ru/products/category/protivkrajy/electron-system-control/",
+          "observed_product_count": 12,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/protivkrajy/dopoln_akses/",
+          "observed_product_count": 38,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/protivkrajy/safe-archive/",
+          "observed_product_count": 82,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 445
+    },
+    {
+      "name": "ПРОГРАММНЫЕ ПРОДУКТЫ",
+      "source_url": "https://anado.ru/products/category/category_104/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "ПО для терминалов сбора данных и мобильных устройств",
+          "source_url": "https://anado.ru/products/category/category_104/tsd-soft/",
+          "observed_product_count": 19,
+          "children": []
+        },
+        {
+          "name": "Мобильный учет",
+          "source_url": "https://anado.ru/products/category/category_104/mobtracc/",
+          "observed_product_count": 35,
+          "children": []
+        },
+        {
+          "name": "Решения для работы с системой \"Маркировки\"",
+          "source_url": "https://anado.ru/products/category/category_104/mark-soft/",
+          "observed_product_count": 3,
+          "children": []
+        },
+        {
+          "name": "Автоматизация предприятия торговли",
+          "source_url": "https://anado.ru/products/category/category_104/autom_predpr/",
+          "observed_product_count": 19,
+          "children": []
+        },
+        {
+          "name": "Автоматизация предприятия питания",
+          "source_url": "https://anado.ru/products/category/category_104/category_9988/",
+          "observed_product_count": 10,
+          "children": []
+        },
+        {
+          "name": "Автоматизация автосервиса и магазина автомобильных запчастей",
+          "source_url": "https://anado.ru/products/category/category_104/automotiz-avto/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "ПО для торгового оборудования",
+          "source_url": "https://anado.ru/products/category/category_104/category_117/",
+          "observed_product_count": 7,
+          "children": []
+        },
+        {
+          "name": "Драйверы для торгового оборудования",
+          "source_url": "https://anado.ru/products/category/category_104/drivers-for-devices/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Дополнительные модули и лицензии",
+          "source_url": "https://anado.ru/products/category/category_104/dop-modules-licenses/",
+          "observed_product_count": 5,
+          "children": []
+        },
+        {
+          "name": "Электронные ключи",
+          "source_url": "https://anado.ru/products/category/category_104/elekt-keys/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/category_104/PO-arhiv/",
+          "observed_product_count": 155,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 405
+    },
+    {
+      "name": "УПАКОВОЧНОЕ ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/category_103/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Упаковочное оборудование",
+          "source_url": "https://anado.ru/products/category/category_103/category_105/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "Шредеры",
+          "source_url": "https://anado.ru/products/category/category_103/shreders/",
+          "observed_product_count": 72,
+          "children": []
+        },
+        {
+          "name": "Ламинаторы",
+          "source_url": "https://anado.ru/products/category/category_103/laminators/",
+          "observed_product_count": 4,
+          "children": []
+        },
+        {
+          "name": "Брошюровщики, резаки и архивные дрели",
+          "source_url": "https://anado.ru/products/category/category_103/broshur_rezak/",
+          "observed_product_count": 5,
+          "children": []
+        },
+        {
+          "name": "Доп. устройства и аксессуары",
+          "source_url": "https://anado.ru/products/category/category_103/dopobor/",
+          "observed_product_count": 1,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/category_103/archive01/",
+          "observed_product_count": 76,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 404
+    },
+    {
+      "name": "ЗИП",
+      "source_url": "https://anado.ru/products/category/zip/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "ККТ",
+          "source_url": "https://anado.ru/products/category/zip/KKT/",
+          "observed_product_count": 76,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 567
+    },
+    {
+      "name": "АККУМУЛЯТОРЫ",
+      "source_url": "https://anado.ru/products/category/battery/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Аккумуляторы",
+          "source_url": "https://anado.ru/products/category/battery/batteries/",
+          "observed_product_count": 56,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/battery/archive/",
+          "observed_product_count": 66,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 463
+    },
+    {
+      "name": "ДРУГОЕ ОБОРУДОВАНИЕ",
+      "source_url": "https://anado.ru/products/category/other-devices/",
+      "observed_product_count": null,
+      "children": [
+        {
+          "name": "Устройства для вызова персонала",
+          "source_url": "https://anado.ru/products/category/other-devices/knopki-dlya-vyzova/",
+          "observed_product_count": 19,
+          "children": []
+        },
+        {
+          "name": "Архив",
+          "source_url": "https://anado.ru/products/category/other-devices/arhivdr/",
+          "observed_product_count": 9,
+          "children": []
+        }
+      ],
+      "legacy_category_id": 497
+    }
+  ]
+}

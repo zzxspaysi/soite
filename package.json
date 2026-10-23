@@ -1,0 +1,32 @@
+{
+  "name": "anado-store",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "demo": "node scripts/serve-demo.mjs",
+    "export:demo": "node scripts/export-demo.mjs",
+    "prepare:catalog": "node scripts/prepare-catalog.mjs",
+    "dev": "NODE_USE_ENV_PROXY=1 next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "NODE_USE_ENV_PROXY=1 next start --hostname 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "lucide-react": "^0.577.0",
+    "@fontsource-variable/manrope": "^5.2.8",
+    "@fontsource-variable/golos-text": "^5.2.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  }
+}

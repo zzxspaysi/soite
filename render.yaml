@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: anado-demo
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: PAYMENT_MODE
+        value: demo
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
