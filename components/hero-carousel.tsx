@@ -23,6 +23,7 @@ export function HeroCarousel() {
   const [animated, setAnimated] = useState(false);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [keyboardFocus, setKeyboardFocus] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(true);
   const [inView, setInView] = useState(true);
   const [tabVisible, setTabVisible] = useState(true);
@@ -37,9 +38,8 @@ export function HeroCarousel() {
     setPosition((current) => normalize(current));
   }, []);
   const show = useCallback(
-    (next: number, manual = true) => {
+    (next: number) => {
       if (moving.current) return;
-      if (manual) setPaused(true);
       if (reducedMotion) {
         setPosition(normalize(next));
         return;
@@ -83,15 +83,17 @@ export function HeroCarousel() {
   }, [position, animated, reducedMotion, finishTransition]);
 
   const rotating =
-    !paused && !hovered && !reducedMotion && inView && tabVisible;
+    !paused &&
+    !hovered &&
+    !keyboardFocus &&
+    !reducedMotion &&
+    inView &&
+    tabVisible;
   useEffect(() => {
     if (!rotating) return;
     // Count from the start of a slide change, including its transition time.
     // The visual clone reset must not restart this interval at the loop boundary.
-    const timer = setTimeout(
-      () => show(active + 2, false),
-      AUTOPLAY_INTERVAL_MS,
-    );
+    const timer = setTimeout(() => show(active + 2), AUTOPLAY_INTERVAL_MS);
     return () => clearTimeout(timer);
   }, [rotating, active, show]);
 
@@ -108,11 +110,15 @@ export function HeroCarousel() {
       }}
       onPointerLeave={() => setHovered(false)}
       onFocusCapture={(event) => {
-        if (
-          !(event.target instanceof HTMLElement) ||
-          event.target.dataset.carouselControl !== "playback"
-        )
-          setPaused(true);
+        setKeyboardFocus(
+          event.target instanceof HTMLElement &&
+            event.target.matches(":focus-visible") &&
+            event.target.dataset.carouselControl !== "playback",
+        );
+      }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget))
+          setKeyboardFocus(false);
       }}
       onKeyDown={(event) => {
         if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
@@ -261,7 +267,7 @@ export function HeroCarousel() {
       <p
         className="sr-only"
         role="status"
-        aria-live={paused || reducedMotion ? "polite" : "off"}
+        aria-live={paused || keyboardFocus || reducedMotion ? "polite" : "off"}
         aria-atomic="true"
       >
         {active + 1} из {count}: {slides[active].name}

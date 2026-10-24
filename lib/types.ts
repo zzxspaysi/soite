@@ -1,3 +1,5 @@
+import { roundPrice } from "./money.mjs";
+export { formatMoney } from "./money.mjs";
 import { safeCatalogImage } from "./urls.mjs";
 export type Category = {
   id: string;
@@ -68,7 +70,7 @@ export function restoreCart(value: unknown): CartItem[] {
       name: row.name.slice(0, 400),
       variant: row.variant.slice(0, 1000),
       image: safeCatalogImage(row.image),
-      price: row.price,
+      price: roundPrice(row.price),
       quantity: Math.min(
         99,
         row.quantity + (items.get(row.offerId)?.quantity || 0),
@@ -77,11 +79,3 @@ export function restoreCart(value: unknown): CartItem[] {
   }
   return [...items.values()];
 }
-export const formatMoney = (v: number | null) =>
-  v === null
-    ? "Цена по запросу"
-    : new Intl.NumberFormat("ru-RU", {
-        style: "currency",
-        currency: "RUB",
-        maximumFractionDigits: v % 100 ? 2 : 0,
-      }).format(v / 100);

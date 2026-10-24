@@ -14,12 +14,13 @@ with sync_playwright() as p:
     context = browser.new_context(viewport={'width': 1440, 'height': 1050}, reduced_motion='reduce')
     page = context.new_page()
     page.on('pageerror', lambda e: report['errors'].append(str(e)))
-    page.on('response', lambda r: report['failedRequests'].append({'url': r.url, 'status': r.status}) if r.status >= 500 else None)
+    page.on('response', lambda r: report['failedRequests'].append({'url': r.url, 'status': r.status}) if r.status >= 500 or (r.request.resource_type == 'image' and r.status >= 400) else None)
 
     assert page.goto(base, wait_until='networkidle').status == 200
     expect(page.locator('h1')).to_have_text('Оборудование для автоматизации бизнеса')
     assert page.locator('.category-tile').count() == 19
     expect(page.locator('.brand img')).to_be_visible()
+    assert page.locator('.promo-device img').evaluate_all('(images) => images.every(image => image.complete && image.naturalWidth > 0)'), 'News images failed to load'
     page.screenshot(path=str(out / 'home-desktop.png'))
     report['checks'].append('Homepage, logo and all 19 root categories')
 

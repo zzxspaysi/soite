@@ -7,6 +7,7 @@ const config: NextConfig = {
   images: {
     localPatterns: [
       { pathname: "/products/**", search: "" },
+      { pathname: "/banners/**", search: "" },
       { pathname: "/media/**", search: "" },
     ],
     maximumDiskCacheSize: 64000000,

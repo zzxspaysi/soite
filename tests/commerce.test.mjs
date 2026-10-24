@@ -109,7 +109,7 @@ test("live payment requires fresh verified prices and sufficient inventory", () 
   });
   assert.equal(
     quote([{ offerId: "1", quantity: 2 }], { live: true }).total,
-    24690,
+    24600,
   );
   assert.throws(() => quote([{ offerId: "1", quantity: 4 }], { live: true }));
   db.prepare("UPDATE offers SET verified_at=? WHERE id=?").run(
@@ -173,9 +173,13 @@ test("YooKassa requests use server totals and a stable idempotency key; only ver
     assert.equal(url, "https://api.yookassa.ru/v3/payments");
     assert.equal(options.headers["Idempotence-Key"], o.id);
     const body = JSON.parse(options.body);
-    assert.deepEqual(body.amount, { value: "246.90", currency: "RUB" });
+    assert.deepEqual(body.amount, { value: "246.00", currency: "RUB" });
     assert.equal(body.payment_method_data.type, "bank_card");
     assert.equal(body.receipt.items[0].quantity, "2");
+    assert.deepEqual(body.receipt.items[0].amount, {
+      value: "123.00",
+      currency: "RUB",
+    });
     return Response.json({
       id: "payment-live-12345",
       confirmation: { confirmation_url: "https://yookassa.ru/checkout/test" },
@@ -189,7 +193,7 @@ test("YooKassa requests use server totals and a stable idempotency key; only ver
       id: "payment-live-12345",
       test: false,
       metadata: { order_id: o.id },
-      amount: { value: "246.90", currency: "RUB" },
+      amount: { value: "246.00", currency: "RUB" },
       status: "succeeded",
       paid: true,
     };
@@ -197,7 +201,7 @@ test("YooKassa requests use server totals and a stable idempotency key; only ver
       { ...payment, test: true },
       { ...payment, amount: { value: "0.01", currency: "RUB" } },
       { ...payment, metadata: { order_id: "other" } },
-      { ...payment, amount: { value: "246.90", currency: "USD" } },
+      { ...payment, amount: { value: "246.00", currency: "USD" } },
     ])
       assert.throws(() => applyVerifiedPayment(invalid));
     assert.equal(authorizedOrder(o.id, o.token).status, "pending");
