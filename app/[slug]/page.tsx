@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BusinessSolutions } from "@/components/business-solutions";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, MapPin, Phone } from "lucide-react";
 const titles: Record<string, string> = {
@@ -102,46 +103,7 @@ export default async function InfoPage({
           </div>
         </>
       )}
-      {slug === "solutions" && (
-        <>
-          <div className="content-grid">
-            {[
-              {
-                title: "Магазины и розница",
-                text: "Кассовая зона, сканирование штрихкодов, печать этикеток, взвешивание и товарный учёт. Подбор устройств для работы с маркировкой и онлайн-кассами.",
-                categories: ["online-kassy", "ident", "vesovoe_oborud"],
-              },
-              {
-                title: "Склады и логистика",
-                text: "Терминалы сбора данных, сканеры и принтеры этикеток. Автоматизация приёмки, перемещения и инвентаризации, в том числе с использованием Склад 15.",
-                categories: ["ident", "printland", "rashodniki"],
-              },
-              {
-                title: "Кафе и рестораны",
-                text: "POS-системы, чековые принтеры, весы и программное обеспечение. Подключение рабочих мест персонала и кассовой периферии.",
-                categories: ["pos_sistems", "pos_perifer", "printland"],
-              },
-              {
-                title: "Производство",
-                text: "Маркировка продукции, печать и считывание кодов, промышленное взвешивание. Поможем связать оборудование с учётными процессами.",
-                categories: ["markirov", "vesovoe_oborud", "category_104"],
-              },
-            ].map((x, i) => (
-              <article id={`solution-${i}`} key={x.title} className="info-card">
-                <div className="eyebrow">Решение 0{i + 1}</div>
-                <h2>{x.title}</h2>
-                <p>{x.text}</p>
-                <Link
-                  href={`/catalog?category=${x.categories[0]}`}
-                  className="text-link"
-                >
-                  Подобрать оборудование <ArrowUpRight size={17} />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </>
-      )}
+      {slug === "solutions" && <BusinessSolutions />}
       {slug === "services" && (
         <div className="content-grid">
           {[

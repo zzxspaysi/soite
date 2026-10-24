@@ -23,7 +23,7 @@ with sync_playwright() as p:
     page.screenshot(path=str(out / 'home-desktop.png'))
     report['checks'].append('Homepage, logo and all 19 root categories')
 
-    page.get_by_role('button', name='Каталог', exact=True).click()
+    page.get_by_role('banner').get_by_role('button', name='Каталог', exact=True).click()
     expect(page.locator('.mega-menu')).to_be_visible()
     assert page.locator('.mega-roots button').count() == 19
     page.keyboard.press('Escape')
@@ -108,7 +108,7 @@ with sync_playwright() as p:
         assert mp.evaluate('document.documentElement.scrollWidth <= innerWidth'), path + ' overflows'
         mp.screenshot(path=str(out / screenshot))
     mp.goto(base, wait_until='networkidle')
-    mp.get_by_role('button', name='Каталог', exact=True).click()
+    mp.get_by_role('banner').get_by_role('button', name='Каталог', exact=True).click()
     expect(mp.locator('.mega-menu')).to_be_visible()
     mp.locator('.mega-roots button').nth(3).click()
     expect(mp.locator('.mega-children h2')).to_contain_text('СКАНЕРЫ')

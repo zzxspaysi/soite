@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { businessSections, businessHref } from "@/lib/business-sections";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import {
@@ -18,6 +19,7 @@ import { useStore } from "./store-provider";
 export function Header({ categories }: { categories: Category[] }) {
   const [open, setOpen] = useState(false),
     [search, setSearch] = useState(false),
+    [navigation, setNavigation] = useState<string | null>(null),
     [active, setActive] = useState(categories[0]?.id);
   const pathname = usePathname(),
     { items, ready } = useStore(),
@@ -25,35 +27,24 @@ export function Header({ categories }: { categories: Category[] }) {
   useEffect(() => {
     setOpen(false);
     setSearch(false);
+    setNavigation(null);
   }, [pathname]);
   useEffect(() => {
-    if (!open && !search) return;
+    if (!open && !search && !navigation) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
         setSearch(false);
+        setNavigation(null);
       }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, search]);
+  }, [open, search, navigation]);
   const roots = categories.filter((c) => !c.parent),
     current = roots.find((c) => c.id === active);
   return (
     <header className="site-header">
-      <div className="topbar">
-        <div className="shell topbar-inner">
-          <span>
-            <MapPin size={13} /> Новосибирск{" "}
-            <span className="topbar-muted">
-              Работаем с бизнесом по всей России
-            </span>
-          </span>
-          <a href="tel:+73833495944">
-            +7 (383) 349-59-44 <ArrowUpRight size={13} />
-          </a>
-        </div>
-      </div>
       <div className="shell nav-row">
         <Link href="/" className="brand" aria-label="АНАДО — главная">
           <img
@@ -67,6 +58,7 @@ export function Header({ categories }: { categories: Category[] }) {
         <button
           className={`catalog-toggle ${open ? "active" : ""}`}
           onClick={() => {
+            setNavigation(null);
             setOpen(!open);
             setSearch(false);
           }}
@@ -76,18 +68,98 @@ export function Header({ categories }: { categories: Category[] }) {
           {open ? <X size={19} /> : <Menu size={19} />} Каталог{" "}
           <ChevronDown size={14} />
         </button>
-        <nav className="desktop-nav">
-          <Link href="/solutions">Решения</Link>
-          <Link href="/services">Сервис и услуги</Link>
-          <Link href="/about">О компании</Link>
-          <Link href="/contacts">Контакты</Link>
+        <nav className="industry-nav" aria-label="Решения для бизнеса">
+          {businessSections.slice(0, 5).map((section) => (
+            <div
+              className="industry-item"
+              key={section.id}
+              onPointerEnter={(event) => {
+                if (event.pointerType === "mouse") setNavigation(section.id);
+              }}
+              onPointerLeave={(event) => {
+                if (event.pointerType === "mouse") setNavigation(null);
+              }}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget))
+                  setNavigation(null);
+              }}
+            >
+              <button
+                aria-expanded={navigation === section.id}
+                aria-controls={`nav-${section.id}`}
+                onClick={() => {
+                  setNavigation(navigation === section.id ? null : section.id);
+                  setOpen(false);
+                  setSearch(false);
+                }}
+              >
+                {section.id === "logistics"
+                  ? "Склады и логистика"
+                  : section.id === "ecommerce"
+                    ? "E-com"
+                    : section.title}
+                {section.items.length > 1 && <ChevronDown size={13} />}
+              </button>
+              {navigation === section.id && (
+                <div className="industry-dropdown" id={`nav-${section.id}`}>
+                  {section.items.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={businessHref(item)}
+                      onClick={() => setNavigation(null)}
+                    >
+                      {item.title}
+                      <ArrowUpRight size={14} />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </nav>
+        <Link className="header-buy" href="/catalog">
+          Купить
+        </Link>
+        <div
+          className="industry-item support-nav"
+          onPointerEnter={(event) => {
+            if (event.pointerType === "mouse") setNavigation("support");
+          }}
+          onPointerLeave={(event) => {
+            if (event.pointerType === "mouse") setNavigation(null);
+          }}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget))
+              setNavigation(null);
+          }}
+        >
+          <button
+            aria-expanded={navigation === "support"}
+            aria-controls="nav-support"
+            onClick={() => {
+              setNavigation(navigation === "support" ? null : "support");
+              setOpen(false);
+              setSearch(false);
+            }}
+          >
+            Поддержка <ChevronDown size={13} />
+          </button>
+          {navigation === "support" && (
+            <div className="industry-dropdown" id="nav-support">
+              <Link href="/services">Сервис и услуги</Link>
+              <Link href="/contacts">Контакты</Link>
+              <Link href="/delivery">Доставка и оплата</Link>
+              <Link href="/about">О компании</Link>
+            </div>
+          )}
+        </div>
         <div className="nav-actions">
           <button
             className="icon-button"
             aria-label="Поиск по каталогу"
             aria-expanded={search}
             onClick={() => {
+              setNavigation(null);
               setSearch(!search);
               setOpen(false);
             }}

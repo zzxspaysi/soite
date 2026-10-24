@@ -1,14 +1,10 @@
 import Link from "next/link";
+import { BusinessSolutions } from "@/components/business-solutions";
 import {
   ArrowUpRight,
-  Check,
   Barcode,
   Layers3,
   MonitorCog,
-  Store,
-  Warehouse,
-  UtensilsCrossed,
-  Factory,
   Headphones,
   Wrench,
   Plus,
@@ -47,29 +43,13 @@ export default function Home() {
     visuals = categoryVisuals();
   return (
     <>
-      <section className="hero shell">
-        <div className="hero-copy">
-          <h1 className="sr-only">Оборудование для автоматизации бизнеса</h1>
-          <p>
-            Оборудование, программы и сервис,
-            <br className="desktop-only" /> которые работают вместе. От первой
-            кассы
-            <br className="desktop-only" /> до автоматизации всего предприятия.
-          </p>
-          <div className="hero-buttons">
-            <Link href="/catalog" className="btn btn-blue">
-              Выбрать оборудование <ArrowUpRight size={20} />
-            </Link>
-          </div>
-          <div className="hero-proof">
-            <div className="mini-brand">
-              <Check size={17} />
-            </div>
-            <span>Подбираем. Настраиваем. Поддерживаем.</span>
-          </div>
-        </div>
+      <section className="home-showcase" aria-labelledby="home-title">
+        <h1 id="home-title" className="sr-only">
+          Оборудование для автоматизации бизнеса
+        </h1>
         <HeroCarousel />
       </section>
+      <BusinessSolutions />
       <div className="brand-strip shell">
         <span>Технологии ведущих производителей</span>
         <div>
@@ -131,63 +111,6 @@ export default function Home() {
                     </span>
                   )}
                 </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className="section solutions-section">
-        <div className="shell">
-          <div className="section-heading" data-reveal>
-            <div>
-              <div className="eyebrow">02 / Решения для бизнеса</div>
-              <h2>
-                Знаем задачи.
-                <br />
-                Находим решения.
-              </h2>
-            </div>
-            <p className="heading-note">
-              Соединяем оборудование и программы
-              <br />в систему, удобную именно вам.
-            </p>
-          </div>
-          <div className="solutions-grid">
-            {[
-              {
-                name: "Магазины и розница",
-                text: "От кассовой зоны до товарного учёта",
-                icon: Store,
-              },
-              {
-                name: "Склады и логистика",
-                text: "Точный учёт. Быстрая обработка.",
-                icon: Warehouse,
-              },
-              {
-                name: "Кафе и рестораны",
-                text: "Больше внимания вашим гостям",
-                icon: UtensilsCrossed,
-              },
-              {
-                name: "Производство",
-                text: "Контроль на каждом этапе",
-                icon: Factory,
-              },
-            ].map((x, i) => (
-              <Link
-                href={`/solutions#solution-${i}`}
-                key={x.name}
-                className="solution-card"
-                data-reveal
-              >
-                <x.icon size={34} strokeWidth={1.3} />
-                <span className="solution-index">0{i + 1}</span>
-                <h3>{x.name}</h3>
-                <p>{x.text}</p>
-                <span className="circle-arrow">
-                  <ArrowUpRight size={21} />
-                </span>
               </Link>
             ))}
           </div>
