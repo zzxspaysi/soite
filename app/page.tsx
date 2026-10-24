@@ -122,22 +122,24 @@ export default function Home() {
                   <ArrowUpRight size={21} />
                 </div>
                 <h3>{shortNames[c.id] || c.name}</h3>
-                {visuals[c.id] && i < 4 ? (
-                  <img src={visuals[c.id]} alt="" loading="lazy" />
-                ) : (
-                  <span className="category-line-art">
-                    {i === 4 ? (
-                      <Headphones />
-                    ) : i % 3 === 0 ? (
-                      <MonitorCog />
-                    ) : i % 3 === 1 ? (
-                      <Layers3 />
-                    ) : (
-                      <Barcode />
-                    )}
-                  </span>
-                )}
-                <span className="category-count">{c.count} товаров</span>
+                <div className="category-media">
+                  <span className="category-count">{c.count} товаров</span>
+                  {c.id !== "uslugi" && visuals[c.id] ? (
+                    <img src={visuals[c.id]} alt="" loading="lazy" />
+                  ) : (
+                    <span className="category-line-art">
+                      {c.id === "uslugi" ? (
+                        <Headphones />
+                      ) : i % 3 === 0 ? (
+                        <MonitorCog />
+                      ) : i % 3 === 1 ? (
+                        <Layers3 />
+                      ) : (
+                        <Barcode />
+                      )}
+                    </span>
+                  )}
+                </div>
               </Link>
             ))}
           </div>

@@ -884,6 +884,8 @@
     gap: 14px;
   }
   .category-tile {
+    display: flex;
+    flex-direction: column;
     background: #fff;
     border: 1px solid #edf0ef;
     border-radius: 17px;
@@ -915,30 +917,36 @@
   }
   .category-tile h3 {
     font-size: 18px;
-    max-width: 160px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     margin-top: 16px;
     position: relative;
     z-index: 2;
     letter-spacing: -0.03em;
   }
   .category-tile img {
-    position: absolute;
-    width: 145px;
+    width: min(58%, 145px);
     height: 100px;
+    flex-shrink: 1;
+    min-width: 0;
     object-fit: contain;
-    bottom: 14px;
-    right: 0;
     mix-blend-mode: multiply;
     transition: transform 0.7s var(--hover-ease);
-    opacity: 0.9;
+  }
+  .category-media {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
   }
   .category-tile:hover img {
     transform: translate(-6px, -3px) rotate(-3deg);
   }
   .category-count {
-    position: absolute;
-    left: 21px;
-    bottom: 20px;
+    flex-shrink: 0;
+    white-space: nowrap;
     font-size: 9px;
     color: #8b9ba1;
     z-index: 2;
@@ -951,9 +959,9 @@
     color: #007fa6;
   }
   .category-line-art {
-    position: absolute;
-    right: 25px;
-    bottom: 18px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
     color: #c5d7db;
   }
   .category-line-art > svg {
@@ -966,7 +974,6 @@
   }
   .home-categories .category-tile:nth-child(n + 5) h3 {
     font-size: 16px;
-    max-width: 180px;
   }
   .home-categories .category-tile:nth-child(n + 5) .category-line-art {
     opacity: 0.6;
@@ -2799,19 +2806,16 @@
   .category-tile h3 {
     font-size: 16px;
     margin-top: 13px;
-    max-width: 110px;
     line-height: 1.25;
   }
   .category-tile img {
-    width: 103px;
+    width: min(60%, 103px);
     height: 75px;
-    bottom: 15px;
-    right: 0;
-    opacity: 0.85;
+  }
+  .category-media {
+    padding-top: 8px;
   }
   .category-count {
-    left: 16px;
-    bottom: 15px;
     font-size: 8px;
   }
   .home-categories .category-tile:nth-child(n + 5) {
@@ -2819,11 +2823,6 @@
   }
   .home-categories .category-tile:nth-child(n + 5) h3 {
     font-size: 14px;
-    max-width: 130px;
-  }
-  .category-line-art {
-    right: 15px;
-    bottom: 16px;
   }
   .category-line-art > svg {
     width: 35px;
