@@ -76,6 +76,17 @@
     -webkit-user-select: none;
     user-select: none;
   }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
   #description,
   #description *,
   #specifications,
@@ -489,11 +500,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
-    padding-top: 25px;
-    min-height: 660px;
+    padding-top: 12px;
+    min-height: 620px;
   }
   .hero-copy {
-    padding: 52px 0 24px;
+    align-self: center;
+    padding: 0 0 28px;
   }
   .hero-copy .eyebrow {
     color: #667a81;
@@ -613,7 +625,7 @@
   }
   .hero-product {
     position: absolute;
-    top: 115px;
+    top: 85px;
     left: 14%;
     width: 77%;
     height: 355px;
@@ -2202,7 +2214,7 @@
     min-height: 720px;
   }
   .hero-copy {
-    padding-top: 70px;
+    padding-top: 0;
   }
   .hero-scene {
     min-height: 635px;
@@ -2239,7 +2251,7 @@
     min-height: 600px;
   }
   .hero-copy {
-    padding-top: 40px;
+    padding-top: 0;
   }
   .hero h1 {
     font-size: 62px;
@@ -2259,7 +2271,7 @@
   .hero-product {
     left: 6%;
     width: 92%;
-    top: 110px;
+    top: 80px;
     height: 310px;
   }
   .float-one {
@@ -2348,7 +2360,7 @@
     min-height: 500px;
   }
   .hero-product {
-    top: 135px;
+    top: 105px;
     height: 255px;
   }
   .float-one {
@@ -2628,13 +2640,13 @@
   .hero {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    padding-top: 0;
+    gap: 18px;
+    padding-top: 14px;
     min-height: auto;
   }
   .hero-copy {
-    padding-top: 38px;
-    padding-bottom: 0;
+    align-self: stretch;
+    padding: 0 0 22px;
   }
   .hero h1 {
     font-size: 60px;
@@ -2665,6 +2677,7 @@
     margin-top: 23px;
   }
   .hero-scene {
+    order: -1;
     min-height: 410px;
     margin-bottom: 5px;
     width: 100%;
@@ -2676,7 +2689,7 @@
     font-size: 55px;
   }
   .hero-product {
-    top: 73px;
+    top: 48px;
     width: 82%;
     left: 9%;
     height: 265px;

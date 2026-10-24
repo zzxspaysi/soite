@@ -17,7 +17,7 @@ with sync_playwright() as p:
     page.on('response', lambda r: report['failedRequests'].append({'url': r.url, 'status': r.status}) if r.status >= 500 else None)
 
     assert page.goto(base, wait_until='networkidle').status == 200
-    expect(page.locator('h1')).to_contain_text('Ваш бизнес.')
+    expect(page.locator('h1')).to_have_text('Оборудование для автоматизации бизнеса')
     assert page.locator('.category-tile').count() == 19
     expect(page.locator('.brand img')).to_be_visible()
     page.screenshot(path=str(out / 'home-desktop.png'))

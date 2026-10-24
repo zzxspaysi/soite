@@ -1,17 +1,16 @@
 import Link from "next/link";
 import {
-  ArrowRight,
   ArrowUpRight,
   Check,
   Barcode,
   Layers3,
   MonitorCog,
-  ShieldCheck,
   Store,
   Warehouse,
   UtensilsCrossed,
   Factory,
   Headphones,
+  Wrench,
   Plus,
 } from "lucide-react";
 import { categories, featured, categoryVisuals } from "@/lib/catalog.mjs";
@@ -50,14 +49,7 @@ export default function Home() {
     <>
       <section className="hero shell">
         <div className="hero-copy">
-          <div className="eyebrow">
-            <span className="status-dot" /> Автоматизация бизнеса с ANADO
-          </div>
-          <h1>
-            Ваш бизнес.
-            <br />
-            Новый <span>уровень.</span>
-          </h1>
+          <h1 className="sr-only">Оборудование для автоматизации бизнеса</h1>
           <p>
             Оборудование, программы и сервис,
             <br className="desktop-only" /> которые работают вместе. От первой
@@ -67,9 +59,6 @@ export default function Home() {
           <div className="hero-buttons">
             <Link href="/catalog" className="btn btn-blue">
               Выбрать оборудование <ArrowUpRight size={20} />
-            </Link>
-            <Link href="/solutions" className="btn btn-outline">
-              Найти решение <ArrowRight size={19} />
             </Link>
           </div>
           <div className="hero-proof">
@@ -124,12 +113,14 @@ export default function Home() {
                 <h3>{shortNames[c.id] || c.name}</h3>
                 <div className="category-media">
                   <span className="category-count">{c.count} товаров</span>
-                  {c.id !== "uslugi" && visuals[c.id] ? (
+                  {visuals[c.id] ? (
                     <img src={visuals[c.id]} alt="" loading="lazy" />
                   ) : (
                     <span className="category-line-art">
                       {c.id === "uslugi" ? (
                         <Headphones />
+                      ) : c.id === "zip" ? (
+                        <Wrench />
                       ) : i % 3 === 0 ? (
                         <MonitorCog />
                       ) : i % 3 === 1 ? (
@@ -221,53 +212,6 @@ export default function Home() {
           Цены из каталога ANADO. Актуальную стоимость и наличие подтвердим при
           оформлении.
         </p>
-      </section>
-      <section className="service-section">
-        <div className="shell service-inner">
-          <div data-reveal>
-            <div className="eyebrow">04 / Поддержка рядом</div>
-            <h2>
-              Техника работает.
-              <br />
-              <span>Вы развиваете бизнес.</span>
-            </h2>
-            <p>
-              Поможем с регистрацией кассы, подключением оборудования и
-              программ. А если что-то пойдёт не так — наш сервисный центр рядом.
-            </p>
-            <Link href="/services" className="btn btn-lime">
-              Сервис и услуги <ArrowUpRight size={20} />
-            </Link>
-          </div>
-          <div className="service-steps" data-reveal>
-            {[
-              {
-                icon: MonitorCog,
-                title: "Подключим и настроим",
-                text: "Оборудование, кассовое ПО и товарный учёт",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Возьмём на обслуживание",
-                text: "Диагностика, ремонт и обновления",
-              },
-              {
-                icon: Headphones,
-                title: "Поможем разобраться",
-                text: "Консультации и обучение сотрудников",
-              },
-            ].map((x, i) => (
-              <div key={x.title}>
-                <x.icon size={28} strokeWidth={1.4} />
-                <span>
-                  <b>{x.title}</b>
-                  <small>{x.text}</small>
-                </span>
-                <span className="step-number">0{i + 1}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
       <section className="section shell faq-section">
         <div data-reveal>
