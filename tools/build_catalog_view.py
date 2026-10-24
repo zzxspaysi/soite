@@ -3,7 +3,9 @@
 import html
 import json
 import csv
+import re
 from pathlib import Path
+from export_anado_catalog import safe_external_url
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "catalog"
@@ -35,6 +37,10 @@ def esc(value):
     return html.escape(str(value or ""), quote=True)
 
 
+def catalog_image_path(value):
+    return value if isinstance(value, str) and re.fullmatch(r'images/[a-f0-9]{24}\.(?:jpe?g|png|webp|gif|bmp)', value, re.I) else None
+
+
 def paragraphs(text, fallback):
     return "".join("<p>" + esc(line) + "</p>" for line in (text or fallback).splitlines() if line.strip())
 
@@ -50,15 +56,15 @@ def shell(title, content, nested=False):
 
 def product_page(product, category_names):
     tags = "".join(f'<a href="../index.html?category={esc(url)}">{esc(category_names.get(url, url))}</a>' for url in product["category_urls"])
-    if product.get("local_primary_image"):
+    if catalog_image_path(product.get("local_primary_image")):
         photo = f'<img src="../{esc(product["local_primary_image"])}" alt="{esc(product["name"])}">'
     else:
         photo = '<div class="placeholder">Фото не сохранено</div>'
-    image_links = "".join(f'<li><a href="{esc(url)}" target="_blank" rel="noreferrer">Фото {i} на исходном сайте</a></li>' for i, url in enumerate(product["image_urls"], 1))
+    image_links = "".join(f'<li><a href="{esc(safe_external_url(url))}" target="_blank" rel="noreferrer">Фото {i} на исходном сайте</a></li>' for i, url in enumerate(product["image_urls"], 1) if safe_external_url(url))
     content = f'''<a href="../index.html">← Весь каталог</a><h1>{esc(product["name"])}</h1><div class="tags">{tags}</div>
 <div class="product-top"><section class="photo">{photo}<ul>{image_links}</ul></section>
 <section><h2>Описание</h2>{paragraphs(product["description_text"], "Описание на исходной странице не указано.")}
-<p><a href="{esc(product["source_url"])}" target="_blank" rel="noreferrer">Оригинальная карточка ANADO</a></p>
+<p><a href="{esc(safe_external_url(product["source_url"]))}" target="_blank" rel="noreferrer">Оригинальная карточка ANADO</a></p>
 <p class="muted">Получено: {esc(product["captured_at_utc"][:10])}</p></section></div>'''
     content += '<section class="panel"><h2>Характеристики</h2>'
     if product["specification_tables"]:
@@ -80,7 +86,7 @@ def product_page(product, category_names):
         content += "<p>Отдельные артикулы или комплектации на странице не указаны.</p>"
     content += "</section>"
     if product["documents"]:
-        content += '<section class="panel"><h2>Документы</h2><ul>' + "".join(f'<li><a href="{esc(doc["source_url"])}">{esc(doc["name"])}</a></li>' for doc in product["documents"]) + "</ul></section>"
+        content += '<section class="panel"><h2>Документы</h2><ul>' + "".join(f'<li><a href="{esc(safe_external_url(doc["source_url"]))}">{esc(doc["name"])}</a></li>' for doc in product["documents"] if safe_external_url(doc['source_url'])) + "</ul></section>"
     return shell(product["name"], content, nested=True)
 
 
@@ -111,9 +117,11 @@ def main(products=None, report=None):
         options.append("</optgroup>")
     data = []
     for p in products:
+        if not re.fullmatch(r'[a-f0-9]{16}', p['id']):
+            raise ValueError('Invalid exported product ID')
         (OUT / "products" / (p["id"] + ".html")).write_text(product_page(p, category_names))
         data.append({"id": p["id"], "name": p["name"], "categories": p["category_urls"],
-                     "photo": p.get("local_primary_image"), "offers": len(p["offers"]),
+                     "photo": catalog_image_path(p.get("local_primary_image")), "offers": len(p["offers"]),
                      "hasDescription": bool(p["description_text"]), "hasSpecs": bool(p["specifications_text"]),
                      "search": " ".join([p["name"], *[o["sku"] for o in p["offers"]]]).lower()})
     encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")

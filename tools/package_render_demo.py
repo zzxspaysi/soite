@@ -7,11 +7,13 @@ import tempfile
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
-bundle = Path(tempfile.mkdtemp(prefix='anado-render-upload-'))
-payload = bundle.parent / (bundle.name + '.tar.gz')
+scratch = Path(tempfile.mkdtemp(prefix='anado-render-upload-'))
+bundle = scratch / 'upload'
+bundle.mkdir(mode=0o700)
+payload = scratch / 'payload.tar.gz'
 included = ['app', 'components', 'lib', 'scripts', 'public', 'catalog/images',
             'data/anado-categories.json', 'data/catalog-demo.sqlite.gz',
-            'next.config.ts', 'tsconfig.json', 'next-env.d.ts']
+            'next.config.ts', 'tsconfig.json', 'next-env.d.ts', 'proxy.ts']
 if not (root / 'data/catalog-demo.sqlite.gz').is_file():
     raise SystemExit('Run npm run export:demo first.')
 with tarfile.open(payload, 'w:gz', compresslevel=6, dereference=False) as archive:
@@ -62,6 +64,7 @@ with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_STORED) as archive:
     for file in sorted(bundle.iterdir()):
         archive.write(file, arcname='anado-render-demo/' + file.name)
 with zipfile.ZipFile(output) as archive:
-    assert archive.testzip() is None
+    if archive.testzip() is not None:
+        raise ValueError('Deployment archive failed integrity verification')
 print(f'Upload folder: {bundle}')
 print(f'Archive: {output}; {output.stat().st_size:,} bytes; {len(list(bundle.iterdir()))} files')

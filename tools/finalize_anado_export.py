@@ -18,7 +18,7 @@ import httpx
 from PIL import Image
 
 import build_catalog_view
-from export_anado_catalog import Exporter
+from export_anado_catalog import Exporter, DEFAULT_CACHE
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "catalog"
@@ -27,7 +27,7 @@ OUT = ROOT / "catalog"
 async def fill_missing_photos(products, manifest):
     candidates = [p for p in products if not p.get("local_primary_image") and p["image_urls"]]
     print(json.dumps({"stage": "photo_fallback", "cards": len(candidates)}), flush=True)
-    args = SimpleNamespace(cache="/tmp/anado-export-cache", output=str(OUT), concurrency=3, rate=4)
+    args = SimpleNamespace(cache=str(DEFAULT_CACHE), output=str(OUT), concurrency=3, rate=4)
     exporter = Exporter(args)
     exporter.images = manifest
     async with httpx.AsyncClient(verify=ssl.create_default_context(), follow_redirects=True,
@@ -91,8 +91,8 @@ def main():
     manifest = json.loads((OUT / "image-manifest.json").read_text())
     # Include accessible products found through links inside other source pages.
     # Some of these URLs are aliases of cards already exported.
-    additional_data = Path("/tmp/anado-additional-discovery.json")
-    additional_records = Path("/tmp/anado-additional-products.json")
+    additional_data = DEFAULT_CACHE / 'additional-discovery.json'
+    additional_records = DEFAULT_CACHE / 'additional-products.json'
     new_cards = []
     if additional_data.exists() and additional_records.exists():
         discovery = json.loads(additional_data.read_text())
@@ -119,14 +119,14 @@ def main():
             manifest.update(discovery["images"])
             (OUT / "additional-discovery.json").write_text(json.dumps(discovery, ensure_ascii=False, indent=2))
     # Materialize new Markdown cards before the completeness validation below.
-    initial_writer = Exporter(SimpleNamespace(cache="/tmp/anado-export-cache", output=str(OUT), concurrency=1, rate=1))
+    initial_writer = Exporter(SimpleNamespace(cache=str(DEFAULT_CACHE), output=str(OUT), concurrency=1, rate=1))
     for product in new_cards:
         initial_writer.write_product(product)
     validate(products, report, manifest)
     if not args.skip_fallback:
         extra_errors = asyncio.run(fill_missing_photos(products, manifest))
         report["errors"].extend(extra_errors)
-    args_md = SimpleNamespace(cache="/tmp/anado-export-cache", output=str(OUT), concurrency=1, rate=1)
+    args_md = SimpleNamespace(cache=str(DEFAULT_CACHE), output=str(OUT), concurrency=1, rate=1)
     writer = Exporter(args_md)
     writer.category_names = {c["source_url"]: c["name"] for c in report["category_pages"]}
     for product in products:

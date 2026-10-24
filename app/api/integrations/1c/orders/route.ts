@@ -1,6 +1,6 @@
 import { integrationAuthorized, InputError } from "@/lib/commerce.mjs";
 import { db } from "@/lib/db.mjs";
-import { readJson, apiError } from "@/lib/http.mjs";
+import { readJson, apiJson, apiError, limit } from "@/lib/http.mjs";
 function auth(r: Request) {
   if (!integrationAuthorized(r.headers.get("authorization")))
     throw new InputError("Unauthorized", 401);
@@ -8,6 +8,7 @@ function auth(r: Request) {
 export async function GET(request: Request) {
   try {
     auth(request);
+    limit(request, "integration");
     const orders = db
       .prepare(
         "SELECT * FROM orders WHERE mode='live' AND exported_at IS NULL ORDER BY created_at LIMIT 100",
@@ -22,10 +23,7 @@ export async function GET(request: Request) {
         paymentMethod: o.payment_method,
         status: o.status,
       }));
-    return Response.json(
-      { orders },
-      { headers: { "Cache-Control": "no-store" } },
-    );
+    return apiJson({ orders }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     return apiError(e);
   }
@@ -33,10 +31,13 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     auth(request);
+    limit(request, "integration");
     const body = await readJson(request);
     if (
       typeof body.orderId !== "string" ||
+      body.orderId.length > 100 ||
       typeof body.documentId !== "string" ||
+      body.documentId.length > 128 ||
       !body.documentId.trim()
     )
       throw new InputError("orderId and documentId required");
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       new Date().toISOString(),
       body.orderId,
     );
-    return Response.json({ ok: true });
+    return apiJson({ ok: true });
   } catch (e) {
     return apiError(e);
   }

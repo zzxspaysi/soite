@@ -3,6 +3,7 @@
 !package.json
 !package-lock.json
 !next.config.ts
+!proxy.ts
 !next-env.d.ts
 !tsconfig.json
 !app/

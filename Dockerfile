@@ -13,13 +13,16 @@ COPY scripts ./scripts
 COPY data ./data
 COPY public ./public
 COPY catalog/images ./catalog/images
-COPY next.config.ts tsconfig.json next-env.d.ts ./
+COPY next.config.ts tsconfig.json next-env.d.ts proxy.ts ./
 RUN node scripts/prepare-demo.mjs && npm run build
 
 FROM node:24-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PAYMENT_MODE=demo PORT=10000
-COPY --from=build --chown=node:node /app /app
+COPY --from=build /app /app
+RUN chmod -R a+rX /app && mkdir -p /app/.next/cache \
+    && chown -R node:node /app/.local /app/.next/cache \
+    && chmod 700 /app/.local && chmod 600 /app/.local/*.sqlite
 USER node
 EXPOSE 10000
 CMD ["node", "scripts/serve-demo.mjs"]

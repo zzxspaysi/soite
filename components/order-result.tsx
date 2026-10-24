@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -18,18 +18,37 @@ type Order = {
   paymentUrl?: string;
   customer: { name: string; email: string; delivery: string };
 };
-export function OrderResult({ id, token }: { id: string; token: string }) {
+export function OrderResult({ id }: { id: string }) {
+  const [token, setToken] = useState<string | null>(null);
   const [order, setOrder] = useState<Order | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
   const { clear } = useStore();
-  async function refresh() {
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const value =
+      new URLSearchParams(url.hash.slice(1)).get("token") ||
+      url.searchParams.get("token") ||
+      "";
+    if (url.searchParams.has("token")) {
+      url.searchParams.delete("token");
+      url.hash = "token=" + encodeURIComponent(value);
+      window.history.replaceState(
+        null,
+        "",
+        url.pathname + url.search + url.hash,
+      );
+    }
+    setToken(/^[a-f0-9]{48}$/.test(value) ? value : "");
+  }, [id]);
+  const refresh = useCallback(async () => {
+    if (token === null) return;
     setBusy(true);
     try {
-      const r = await fetch(
-          `/api/orders/${id}?token=${encodeURIComponent(token)}`,
-          { cache: "no-store" },
-        ),
+      const r = await fetch(`/api/orders/${encodeURIComponent(id)}`, {
+          cache: "no-store",
+          headers: { Authorization: "Bearer " + token },
+        }),
         data = await r.json();
       if (!r.ok) throw Error(data.error);
       setOrder(data);
@@ -39,10 +58,10 @@ export function OrderResult({ id, token }: { id: string; token: string }) {
     } finally {
       setBusy(false);
     }
-  }
-  useEffect(() => {
-    refresh(); /* token-bound order is fetched only for this route */ // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, token]);
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
   useEffect(() => {
     if (
       order &&
@@ -53,10 +72,13 @@ export function OrderResult({ id, token }: { id: string; token: string }) {
   async function demo() {
     setBusy(true);
     try {
-      const r = await fetch(`/api/orders/${id}/demo`, {
+      const r = await fetch(`/api/orders/${encodeURIComponent(id)}/demo`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({}),
         }),
         data = await r.json();
       if (!r.ok) throw Error(data.error);

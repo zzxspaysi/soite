@@ -4,7 +4,7 @@ import {
   InputError,
 } from "@/lib/commerce.mjs";
 import { db } from "@/lib/db.mjs";
-import { readJson, apiError } from "@/lib/http.mjs";
+import { readJson, apiJson, apiError, limit } from "@/lib/http.mjs";
 function auth(r: Request) {
   if (!integrationAuthorized(r.headers.get("authorization")))
     throw new InputError("Unauthorized", 401);
@@ -12,7 +12,10 @@ function auth(r: Request) {
 export async function POST(request: Request) {
   try {
     auth(request);
-    return Response.json(syncInventory(await readJson(request)));
+    limit(request, "integration");
+    return apiJson(
+      syncInventory(await readJson(request, { maxBytes: 512000 })),
+    );
   } catch (e) {
     return apiError(e);
   }
@@ -20,9 +23,13 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   try {
     auth(request);
+    limit(request, "integration");
     const p = new URL(request.url).searchParams,
-      offset = Math.max(0, Math.floor(Number(p.get("offset")) || 0));
-    return Response.json(
+      value = p.get("offset") || "0",
+      offset = Number(value);
+    if (!/^\d{1,8}$/.test(value) || !Number.isSafeInteger(offset))
+      throw new InputError("Invalid offset");
+    return apiJson(
       {
         offers: db
           .prepare(

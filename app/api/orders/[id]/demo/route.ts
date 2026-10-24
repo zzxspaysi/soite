@@ -1,13 +1,20 @@
 import { authorizedOrder, InputError, publicOrder } from "@/lib/commerce.mjs";
 import { db } from "@/lib/db.mjs";
-import { readJson, apiError, sameOrigin } from "@/lib/http.mjs";
+import {
+  apiJson,
+  apiError,
+  sameOrigin,
+  limit,
+  orderToken,
+} from "@/lib/http.mjs";
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     sameOrigin(request);
-    const { token } = await readJson(request),
+    limit(request, "demo-payment");
+    const token = orderToken(request),
       { id } = await params;
     const o = authorizedOrder(id, token);
     if (!o) throw new InputError("Заказ не найден.", 404);
@@ -19,7 +26,7 @@ export async function POST(
     db.prepare(
       "UPDATE orders SET status='demo_paid' WHERE id=? AND mode='demo' AND status='pending'",
     ).run(id);
-    return Response.json(publicOrder(authorizedOrder(id, token)), {
+    return apiJson(publicOrder(authorizedOrder(id, token)), {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (e) {

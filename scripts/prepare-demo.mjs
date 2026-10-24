@@ -9,6 +9,7 @@ import { dirname, resolve } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { createGunzip } from "node:zlib";
 import { DatabaseSync } from "node:sqlite";
+import { randomBytes } from "node:crypto";
 
 // The demo seed contains the public catalog only, never customer orders or credentials.
 const database = resolve(process.env.ANADO_DB || ".local/anado.sqlite");
@@ -18,12 +19,13 @@ if (!existsSync(database)) {
     throw new Error(
       "Demo catalog missing. Run node scripts/export-demo.mjs first.",
     );
-  mkdirSync(dirname(database), { recursive: true });
-  const staging = database + ".initializing";
+  mkdirSync(dirname(database), { recursive: true, mode: 0o700 });
+  const staging =
+    database + "." + randomBytes(8).toString("hex") + ".initializing";
   await pipeline(
     createReadStream(seed),
     createGunzip(),
-    createWriteStream(staging),
+    createWriteStream(staging, { flags: "wx", mode: 0o600 }),
   );
   renameSync(staging, database);
   // Establish WAL before parallel Next.js build workers open the restored catalog.

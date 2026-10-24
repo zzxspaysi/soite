@@ -81,7 +81,7 @@ test("order creation is idempotent; changed body conflicts; access requires ungu
   assert.throws(() =>
     createOrder({ ...orderInput(), items: [{ offerId: "1", quantity: 3 }] }),
   );
-  assert.equal(authorizedOrder(o.id, "wrong"), undefined);
+  assert.ok(!authorizedOrder(o.id, "wrong"));
   assert.equal(authorizedOrder(o.id, o.token).id, o.id);
   assert.throws(() =>
     createOrder({
@@ -149,6 +149,7 @@ test("inventory batches are idempotent and validated before any writes; 1C requi
   assert.equal(integrationAuthorized("Bearer " + "я".repeat(32)), false);
 });
 test("YooKassa requests use server totals and a stable idempotency key; only verified matching live payments mark paid", async () => {
+  process.env.LIVE_PAYMENTS_ENABLED = "1";
   process.env.PAYMENT_MODE = "live";
   process.env.SITE_URL = "https://store.example.invalid";
   process.env.YOOKASSA_AUTHORIZATION = "Basic test-fixture";
@@ -210,6 +211,8 @@ test("YooKassa requests use server totals and a stable idempotency key; only ver
   } finally {
     globalThis.fetch = originalFetch;
     process.env.PAYMENT_MODE = "demo";
+    delete process.env.LIVE_PAYMENTS_ENABLED;
+    delete process.env.SITE_URL;
   }
 });
 test("browser writes reject cross-origin requests and JSON bodies are bounded", async () => {

@@ -6,17 +6,12 @@ export const metadata = {
 };
 export default async function OrderPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ token?: string }>;
 }) {
   return (
     <div className="shell">
-      <OrderResult
-        id={(await params).id}
-        token={(await searchParams).token || ""}
-      />
+      <OrderResult id={(await params).id} />
     </div>
   );
 }

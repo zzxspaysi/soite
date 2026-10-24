@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { CartItem } from "@/lib/types";
+import { restoreCart } from "@/lib/types";
 type Store = {
   items: CartItem[];
   add: (item: CartItem) => void;
@@ -23,24 +24,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [notice, setNotice] = useState("");
   useEffect(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem("anado-cart-v1") || "[]");
-      if (Array.isArray(stored))
-        setItems(
-          stored
-            .filter(
-              (x) =>
-                x &&
-                typeof x.offerId === "string" &&
-                Number.isInteger(x.quantity) &&
-                x.quantity > 0,
-            )
-            .slice(0, 100),
-        );
+      const stored = localStorage.getItem("anado-cart-v1") || "[]";
+      if (stored.length <= 128000) setItems(restoreCart(JSON.parse(stored)));
     } catch {}
     setReady(true);
   }, []);
   useEffect(() => {
-    if (ready) localStorage.setItem("anado-cart-v1", JSON.stringify(items));
+    if (ready) {
+      try {
+        localStorage.setItem("anado-cart-v1", JSON.stringify(items));
+      } catch {}
+    }
   }, [items, ready]);
   useEffect(() => {
     if (!notice) return;

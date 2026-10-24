@@ -21,11 +21,13 @@ from pathlib import Path
 from urllib.parse import urljoin, urlsplit, urlunsplit, unquote
 
 import httpx
+import os
 from lxml import etree, html
 from PIL import Image
 
 BASE = "https://anado.ru/"
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_CACHE = ROOT / '.local' / 'export-cache'
 
 
 def normalized_url(value, base=BASE):
@@ -35,6 +37,18 @@ def normalized_url(value, base=BASE):
     if p.hostname not in {"anado.ru", "www.anado.ru"}:
         return None
     return urlunsplit(("https", "anado.ru", p.path, "", ""))
+
+
+def safe_external_url(value, base=BASE):
+    if not isinstance(value, str) or len(value) > 4096 or re.search(r'[\x00-\x1f\x7f\\]', value):
+        return None
+    try:
+        target = urlsplit(urljoin(base, value))
+        if target.scheme not in {'http', 'https'} or not target.hostname or target.username or target.password:
+            return None
+        return target.geturl()
+    except ValueError:
+        return None
 
 
 def digest(value):
@@ -79,19 +93,22 @@ def tab_fragment(raw, identifier):
 
 def safe_html(element):
     element = html.fromstring(html.tostring(element, encoding="unicode"))
-    for node in element.xpath(".//script|.//style|.//iframe|.//object|.//embed|.//form"):
+    for node in element.xpath(".//script|.//style|.//iframe|.//object|.//embed|.//form|.//meta|.//base|.//link|.//svg|.//math|.//template"):
         node.drop_tree()
     for node in element.iter():
         if not isinstance(node.tag, str):
             continue
+        if node.tag.lower() not in {'div','p','br','span','b','strong','i','em','u','s','sub','sup','ul','ol','li','h1','h2','h3','h4','h5','h6','table','thead','tbody','tfoot','tr','td','th','a','img','blockquote','pre','code','hr'}:
+            node.drop_tag()
+            continue
         for key in list(node.attrib):
-            if key.lower().startswith("on") or key.lower() in {"style", "class", "id"}:
+            if key.lower() not in {'href','src','title','alt','colspan','rowspan'}:
                 del node.attrib[key]
         for attribute in ("href", "src"):
             value = node.get(attribute)
             if value:
-                absolute = urljoin(BASE, value)
-                if urlsplit(absolute).scheme in {"http", "https"}:
+                absolute = safe_external_url(value)
+                if absolute:
                     node.set(attribute, absolute)
                 else:
                     node.attrib.pop(attribute, None)
@@ -159,8 +176,8 @@ def parse_product(raw, url):
     documents = []
     for fragment in (description, specs):
         for anchor in fragment.xpath(".//a[@href]"):
-            target = urljoin(url, anchor.get("href"))
-            if re.search(r"\.(?:pdf|docx?|xlsx?|zip|rar|7z)(?:$|\?)", target, re.I):
+            target = safe_external_url(anchor.get("href"), url)
+            if target and re.search(r"\.(?:pdf|docx?|xlsx?|zip|rar|7z)(?:$|\?)", target, re.I):
                 documents.append({"name": normalize_text(anchor.text_content()) or unquote(urlsplit(target).path.rsplit("/", 1)[-1]), "source_url": target})
     missing = []
     if not text_block(description): missing.append("description_not_provided")
@@ -180,9 +197,17 @@ class Exporter:
     def __init__(self, args):
         self.args = args
         self.cache = Path(args.cache)
+        if len(self.cache.resolve().parts)<3 or self.cache.resolve()==ROOT:
+            raise ValueError('Choose a dedicated cache subdirectory')
+        if self.cache.is_symlink():
+            raise ValueError('Cache directory must not be a symbolic link')
+        self.cache.mkdir(parents=True, exist_ok=True, mode=0o700)
+        if hasattr(os,'getuid') and self.cache.stat().st_uid != os.getuid():
+            raise ValueError('Cache directory must belong to the current user')
+        self.cache.chmod(0o700)
         self.output = Path(args.output)
         for path in [self.cache / "html", self.cache / "records", self.output / "products", self.output / "images"]:
-            path.mkdir(parents=True, exist_ok=True)
+            path.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.semaphore = asyncio.Semaphore(args.concurrency)
         self.rate_lock = asyncio.Lock()
         self.next_request = 0.0
@@ -205,6 +230,9 @@ class Exporter:
             self.next_request = time.monotonic() + 1 / self.args.rate
 
     async def get(self, url, binary=False):
+        url = normalized_url(url)
+        if not url:
+            raise ValueError('Only ANADO source URLs may be fetched')
         key = self.cache / "html" / (digest(url) + ".gz")
         if not binary and key.exists():
             self.stats["cache_hits"] += 1
@@ -213,17 +241,31 @@ class Exporter:
             try:
                 async with self.semaphore:
                     await self.paced()
-                    response = await self.client.get(url)
-                self.stats["requests"] += 1
+                    current=url
+                    for hop in range(6):
+                        if hop:
+                            await self.paced()
+                        async with self.client.stream('GET',current,follow_redirects=False) as response:
+                            self.stats['requests'] += 1
+                            if response.is_redirect:
+                                target=normalized_url(response.headers.get('location'),current)
+                                if not target:raise ValueError('Redirect outside ANADO is not allowed')
+                                current=target
+                                continue
+                            content=bytearray()
+                            async for chunk in response.aiter_bytes():
+                                if len(content)+len(chunk)>20*1024*1024:raise ValueError('Response larger than 20 MiB')
+                                content.extend(chunk)
+                            break
+                    else:
+                        raise ValueError('Too many ANADO redirects')
                 if response.status_code in {429, 500, 502, 503, 504} and attempt < 2:
                     await asyncio.sleep(2 ** (attempt + 1))
                     continue
                 response.raise_for_status()
-                if len(response.content) > 20 * 1024 * 1024:
-                    raise ValueError("Response larger than 20 MiB")
                 if not binary:
-                    key.write_bytes(gzip.compress(response.content))
-                return response.content, normalized_url(str(response.url)) or url
+                    key.write_bytes(gzip.compress(bytes(content)))
+                return bytes(content), current
             except (httpx.TimeoutException, httpx.NetworkError):
                 if attempt == 2:
                     raise
@@ -478,7 +520,7 @@ class Exporter:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", default=str(ROOT / "catalog"))
-    parser.add_argument("--cache", default="/tmp/anado-export-cache")
+    parser.add_argument("--cache", default=str(DEFAULT_CACHE))
     parser.add_argument("--concurrency", type=int, default=4)
     parser.add_argument("--rate", type=float, default=8)
     parser.add_argument("--limit", type=int, default=0, help="Sample mode; skips category traversal")
