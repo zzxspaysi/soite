@@ -524,7 +524,7 @@
     gap: var(--banner-gap);
   }
   .promo-track.is-moving {
-    transition: transform 0.9s cubic-bezier(0.22, 0.75, 0.25, 1);
+    transition: transform 1.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .promo-slide {
     flex: 0 0 var(--banner-width);
@@ -651,6 +651,13 @@
     display: grid;
     place-items: center;
     pointer-events: none;
+    scale: 1;
+    transition: scale 0.85s cubic-bezier(0.22, 0.75, 0.25, 1);
+  }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .promo-slide.is-active:hover .promo-device {
+      scale: 1.06;
+    }
   }
   .promo-device img {
     width: 100%;

@@ -13,6 +13,7 @@ import {
 
 import { homeNews as slides } from "@/lib/home-news";
 const count = slides.length;
+const AUTOPLAY_INTERVAL_MS = 6666;
 const banners = [slides[count - 1], ...slides, slides[0]];
 const normalize = (position: number) => ((position - 1 + count) % count) + 1;
 
@@ -77,17 +78,22 @@ export function HeroCarousel() {
       return;
     }
     // Finish even if a background tab or interrupted CSS transition skips its event.
-    const timer = setTimeout(finishTransition, 1150);
+    const timer = setTimeout(finishTransition, 1400);
     return () => clearTimeout(timer);
   }, [position, animated, reducedMotion, finishTransition]);
 
   const rotating =
     !paused && !hovered && !reducedMotion && inView && tabVisible;
   useEffect(() => {
-    if (!rotating || animated) return;
-    const timer = setTimeout(() => show(position + 1, false), 6500);
+    if (!rotating) return;
+    // Count from the start of a slide change, including its transition time.
+    // The visual clone reset must not restart this interval at the loop boundary.
+    const timer = setTimeout(
+      () => show(active + 2, false),
+      AUTOPLAY_INTERVAL_MS,
+    );
     return () => clearTimeout(timer);
-  }, [rotating, animated, position, show]);
+  }, [rotating, active, show]);
 
   return (
     <div
