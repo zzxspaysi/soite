@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -12,12 +11,12 @@ import {
   Warehouse,
   UtensilsCrossed,
   Factory,
-  Truck,
   Headphones,
   Plus,
 } from "lucide-react";
 import { categories, featured, categoryVisuals } from "@/lib/catalog.mjs";
 import { ProductCard } from "@/components/product-card";
+import { HeroCarousel } from "@/components/hero-carousel";
 import { paymentMode } from "@/lib/commerce.mjs";
 import type { Product, Category } from "@/lib/types";
 const shortNames: Record<string, string> = {
@@ -47,7 +46,6 @@ export default function Home() {
     ),
     products = featured() as unknown as Product[],
     visuals = categoryVisuals();
-  const hero = products[0];
   return (
     <>
       <section className="hero shell">
@@ -81,55 +79,7 @@ export default function Home() {
             <span>Подбираем. Настраиваем. Поддерживаем.</span>
           </div>
         </div>
-        <div className="hero-scene">
-          <div className="scene-grid" />
-          <span className="scene-orbit orbit-one" />
-          <span className="scene-orbit orbit-two" />
-          <div className="scene-word">работает.</div>
-          <div className="scene-pedestal" />
-          <div className="hero-product">
-            <Image
-              src="/products/evotor-73.jpg"
-              alt="Смарт-терминал Эвотор 7.3 из каталога ANADO"
-              width={500}
-              height={654}
-              priority
-                quality={75}
-              sizes="(max-width: 640px) 90vw, 45vw"
-            />
-          </div>
-          <div className="float-card float-one">
-            <span className="float-icon">
-              <Barcode size={22} />
-            </span>
-            <div>
-              <b>Всё под контролем</b>
-              <small>Касса · Товары · Продажи</small>
-            </div>
-            <span className="green-dot" />
-          </div>
-          <div className="float-card float-two">
-            <span className="float-icon lime">
-              <Layers3 size={21} />
-            </span>
-            <div>
-              <b>Одна система</b>
-              <small>Для всех процессов</small>
-            </div>
-          </div>
-          <Link href={`/product/${hero.id}`} className="hero-product-link">
-            <div>
-              <span>Смарт-терминал</span>
-              <b>Эвотор 7.3</b>
-            </div>
-            <ArrowUpRight size={23} />
-          </Link>
-          <div className="scene-index">
-            <span>01</span>
-            <i />
-            <span>ANADO / BUSINESS TECH</span>
-          </div>
-        </div>
+        <HeroCarousel />
       </section>
       <div className="brand-strip shell">
         <span>Технологии ведущих производителей</span>
@@ -359,21 +309,6 @@ export default function Home() {
             </details>
           ))}
         </div>
-      </section>
-      <section className="contact-banner shell" data-reveal>
-        <div>
-          <div className="eyebrow">Давайте начнём</div>
-          <h2>
-            Бизнес меняется.
-            <br />
-            Будьте на шаг впереди.
-          </h2>
-          <p>Расскажите о задаче — мы предложим решение.</p>
-        </div>
-        <Link href="/contacts" className="btn btn-dark">
-          Обсудить проект <ArrowUpRight size={22} />
-        </Link>
-        <span className="banner-orbit" />
       </section>
     </>
   );
