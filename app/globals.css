@@ -3332,14 +3332,28 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  position: relative;
-  z-index: 3;
+  position: static;
+  border-radius: inherit;
   background: transparent;
   color: #f4f8fa;
   text-align: left;
   font-size: 17px;
   font-weight: 500;
   padding: 25px 26px 18px;
+}
+.business-toggle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.business-toggle:focus-visible {
+  outline: none;
+}
+.business-toggle:focus-visible::after {
+  outline: 2px solid var(--lime);
+  outline-offset: -3px;
 }
 .business-toggle svg {
   color: #8dcc00;
@@ -3401,6 +3415,7 @@ body {
 .business-links {
   position: relative;
   z-index: 2;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -3417,6 +3432,9 @@ body {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+.business-card.is-open .business-links a {
+  pointer-events: auto;
 }
 .business-links a {
   display: flex;
