@@ -29,6 +29,7 @@ for (const table of [
   "orders",
   "sync_batches",
   "users",
+  "admin_bootstrap",
   "sessions",
   "order_invoices",
 ]) {

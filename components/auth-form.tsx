@@ -28,7 +28,13 @@ export function AuthForm({
       });
       const d = await r.json();
       if (!r.ok) throw Error(d.error);
-      window.location.assign(next === "checkout" ? "/checkout" : "/account");
+      window.location.assign(
+        next === "checkout"
+          ? "/checkout"
+          : next === "admin-setup"
+            ? "/admin/setup"
+            : "/account",
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Ошибка входа");
       setBusy(false);
@@ -88,7 +94,7 @@ export function AuthForm({
       <Link
         href={
           (register ? "/login" : "/register") +
-          (next === "checkout" ? "?next=checkout" : "")
+          (["checkout", "admin-setup"].includes(next) ? "?next=" + next : "")
         }
       >
         {register ? "Уже есть аккаунт? Войти" : "Создать аккаунт"}
