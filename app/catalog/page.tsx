@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { categories, listProducts } from "@/lib/catalog.mjs";
 import { ProductCard } from "@/components/product-card";
@@ -31,7 +32,7 @@ export default async function Catalog({
   const url = (page: number) => {
     const p = new URLSearchParams(params);
     p.set("page", String(page));
-    return "/catalog?" + p.toString();
+    return "/catalog?" + p.toString() + "#catalog-results";
   };
   return (
     <>
@@ -87,7 +88,7 @@ export default async function Catalog({
               </div>
             ))}
         </aside>
-        <div className="catalog-results">
+        <div className="catalog-results" id="catalog-results">
           <CategorySelect categories={tree} value={params.category || ""} />
           {children.length > 0 && (
             <div className="subcategory-chips">
@@ -150,12 +151,12 @@ export default async function Catalog({
               </div>
               <nav className="pagination" aria-label="Страницы каталога">
                 {result.page > 1 && (
-                  <Link
+                  <a
                     href={url(result.page - 1)}
                     aria-label="Предыдущая страница"
                   >
                     ←
-                  </Link>
+                  </a>
                 )}
                 {Array.from(
                   new Set([
@@ -169,24 +170,34 @@ export default async function Catalog({
                 )
                   .sort((a, b) => a - b)
                   .map((n, i, arr) => (
-                    <span className="pagination-fragment" key={n}>
-                      {i > 0 && n - arr[i - 1] > 1 && <span>…</span>}
-                      <Link
-                        className={n === result.page ? "active" : ""}
-                        href={url(n)}
-                        aria-current={n === result.page ? "page" : undefined}
-                      >
-                        {n}
-                      </Link>
-                    </span>
+                    <Fragment key={n}>
+                      {i > 0 && n - arr[i - 1] > 1 && (
+                        <span className="pagination-gap" aria-hidden="true">
+                          …
+                        </span>
+                      )}
+                      {n === result.page ? (
+                        <span
+                          className="active"
+                          aria-current="page"
+                          aria-label={`Страница ${n}`}
+                        >
+                          {n}
+                        </span>
+                      ) : (
+                        <a href={url(n)} aria-label={`Страница ${n}`}>
+                          {n}
+                        </a>
+                      )}
+                    </Fragment>
                   ))}
                 {result.page < result.pages && (
-                  <Link
+                  <a
                     href={url(result.page + 1)}
                     aria-label="Следующая страница"
                   >
                     <ArrowRight size={14} />
-                  </Link>
+                  </a>
                 )}
               </nav>
             </>

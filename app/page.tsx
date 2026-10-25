@@ -120,7 +120,7 @@ export default function Home() {
         <div className="section-heading" data-reveal>
           <div>
             <div className="eyebrow">03 / Выбор оборудования</div>
-            <h2>Начните с главного</h2>
+            <h2>Новинки</h2>
           </div>
           <Link href="/catalog?category=online-kassy" className="text-link">
             Все онлайн-кассы <ArrowUpRight size={21} />

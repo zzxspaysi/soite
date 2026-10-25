@@ -72,10 +72,20 @@ export const businessSections = [
         title: "Кассовое ПО",
         href: "/catalog?category=category_104",
       },
-      { id: "service-catalog", title: "Услуги", href: "/services" },
+      {
+        id: "service-catalog",
+        title: "Услуги",
+        href: "/catalog?category=uslugi",
+      },
     ],
   },
 ];
 export function businessHref(item: { id: string; href?: string }) {
-  return item.href || `/solutions/${item.id}`;
+  if (item.href) return item.href;
+  const section = businessSections.find((section) =>
+    section.items.some((entry) => entry.id === item.id),
+  );
+  return section?.category
+    ? `/catalog?category=${encodeURIComponent(section.category)}`
+    : "/catalog";
 }
