@@ -56,9 +56,13 @@ export default async function Catalog({
         </h1>
       </div>
       <div className="shell catalog-layout">
-        <aside className="catalog-sidebar">
+        <aside className="catalog-sidebar" aria-label="Разделы каталога">
           <div className="sidebar-title">Разделы каталога</div>
-          <Link href="/catalog" className={!category ? "selected" : ""}>
+          <Link
+            href="/catalog"
+            className={!category ? "selected" : ""}
+            aria-current={!category ? "page" : undefined}
+          >
             Все товары <span>5756</span>
           </Link>
           {tree
@@ -68,6 +72,7 @@ export default async function Catalog({
                 <Link
                   className={`sidebar-root ${parent?.id === c.id ? "selected" : ""}`}
                   href={`/catalog?category=${c.id}`}
+                  aria-current={category?.id === c.id ? "page" : undefined}
                 >
                   {c.name}
                   <span>{c.count}</span>
@@ -80,6 +85,9 @@ export default async function Catalog({
                         className={`child-link ${x.id === category?.id ? "selected" : ""}`}
                         key={x.id}
                         href={`/catalog?category=${x.id}`}
+                        aria-current={
+                          category?.id === x.id ? "page" : undefined
+                        }
                       >
                         {x.name}
                         <span>{x.count}</span>
