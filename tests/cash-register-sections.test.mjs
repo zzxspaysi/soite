@@ -68,7 +68,6 @@ test("existing catalog and unchanged category contents are preserved", () => {
   assert.deepEqual(listingIds("online-kassy"), originalIds("online-kassy"));
   assert.equal(listingIds("online-kassy").length, 188);
   for (const id of [
-    "kso",
     "fiskal-nak",
     "ofd",
     "licenzii-kkt",
@@ -85,9 +84,49 @@ test("existing catalog and unchanged category contents are preserved", () => {
       ...originalIds(LEGACY_INTERNET_SECTION),
     ]),
   ].sort();
-  assert.deepEqual(listingIds("online-kassy__onkassy"), onlineUnion);
+  const excluded = new Set(
+    ["smart-terminals", "autonomous", "kso"].flatMap((id) =>
+      listingIds("online-kassy__" + id),
+    ),
+  );
+  assert.deepEqual(
+    listingIds("online-kassy__onkassy"),
+    onlineUnion.filter((id) => !excluded.has(id)),
+  );
+  assert.equal(listingIds("online-kassy__onkassy").length, 33);
   assert.equal(db.prepare("SELECT count(*) n FROM products").get().n, 5756);
   assert.equal(db.prepare("SELECT count(*) n FROM offers").get().n, 11972);
+});
+test("online cash registers exclude other terminal types while all removed cards remain accessible in their sections", () => {
+  const online = new Set(listingIds("online-kassy__onkassy"));
+  const parent = new Set(listingIds("online-kassy"));
+  for (const section of ["smart-terminals", "autonomous", "kso"]) {
+    for (const id of listingIds("online-kassy__" + section)) {
+      assert.ok(!online.has(id));
+      assert.ok(parent.has(id));
+      const product = getProduct(id);
+      assert.ok(
+        product.categories.some(
+          (category) => category.id === "online-kassy__" + section,
+        ),
+      );
+      assert.ok(
+        !product.categories.some(
+          (category) => category.id === "online-kassy__onkassy",
+        ),
+      );
+    }
+  }
+  assert.ok(
+    listingIds("online-kassy__smart-terminals").includes("c6bccf188855990d"),
+  );
+  assert.deepEqual(
+    listingIds("online-kassy__kso"),
+    [
+      ...new Set([...originalIds("online-kassy__kso"), "1b4d0eb60d06feb5"]),
+    ].sort(),
+  );
+  assert.ok(online.has("ee4274ae23a0e67a")); // АТОЛ 30Ф остаётся в онлайн-кассах
 });
 test("new groups reuse existing matching models and keep their original offers and descriptions", () => {
   const root = new Set(originalIds("online-kassy"));
