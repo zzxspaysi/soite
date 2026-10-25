@@ -15,10 +15,33 @@ export function Reveal() {
         }),
       { threshold: 0.08 },
     );
-    document
-      .querySelectorAll("[data-reveal]")
-      .forEach((e) => observer.observe(e));
-    return () => observer.disconnect();
+    const observed = new WeakSet<Element>();
+    const watch = (element: Element) => {
+      if (observed.has(element) || element.classList.contains("revealed"))
+        return;
+      observed.add(element);
+      observer.observe(element);
+    };
+    document.querySelectorAll("[data-reveal]").forEach(watch);
+
+    // Streaming and hydration can insert or replace content after this effect runs.
+    const updates = new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) {
+          if (!(node instanceof Element)) continue;
+          if (node.matches("[data-reveal]")) watch(node);
+          node.querySelectorAll("[data-reveal]").forEach(watch);
+        }
+      }
+    });
+    updates.observe(document.getElementById("main") || document.body, {
+      childList: true,
+      subtree: true,
+    });
+    return () => {
+      observer.disconnect();
+      updates.disconnect();
+    };
   }, [pathname]);
   return null;
 }

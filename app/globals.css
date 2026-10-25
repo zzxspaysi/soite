@@ -945,13 +945,6 @@
     padding: 21px;
     position: relative;
     overflow: hidden;
-    transition:
-      transform var(--hover-duration) var(--hover-ease),
-      box-shadow var(--hover-duration) var(--hover-ease);
-  }
-  .category-tile:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px #163a5010;
   }
   .category-top {
     display: flex;
@@ -983,7 +976,6 @@
     min-width: 0;
     object-fit: contain;
     mix-blend-mode: multiply;
-    transition: transform 0.7s var(--hover-ease);
   }
   .category-media {
     display: flex;
@@ -992,9 +984,6 @@
     gap: 10px;
     margin-top: auto;
     padding-top: 12px;
-  }
-  .category-tile:hover img {
-    transform: translate(-6px, -3px) rotate(-3deg);
   }
   .category-count {
     flex-shrink: 0;
@@ -3339,7 +3328,7 @@ body {
   z-index: -1;
   background: linear-gradient(145deg, #008cbb, #075570 65%, #1b4240);
   opacity: 0;
-  transition: opacity 0.55s ease;
+  transition: opacity 0.55s ease !important;
 }
 .business-card.is-open::before {
   opacity: 1;
@@ -3374,7 +3363,7 @@ body {
 }
 .business-toggle svg {
   color: #8dcc00;
-  transition: transform 0.55s ease;
+  transition: transform 0.55s ease !important;
 }
 .business-card.is-open .business-toggle svg {
   transform: rotate(45deg);
@@ -3387,7 +3376,7 @@ body {
   transition:
     opacity 0.55s ease,
     filter 0.55s ease,
-    transform 0.7s ease;
+    transform 0.7s ease !important;
 }
 .business-art > svg {
   width: 165px;
@@ -3443,13 +3432,13 @@ body {
   transition:
     opacity 0.45s ease,
     transform 0.55s ease,
-    visibility 0s linear 0.65s;
+    visibility 0s linear 0.65s !important;
 }
 .business-card.is-open .business-links {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  transition-delay: 0s;
+  transition-delay: 0s !important;
 }
 .business-card.is-open .business-links a {
   pointer-events: auto;
@@ -3471,11 +3460,15 @@ body {
   --link-order: 0;
   opacity: 0;
   transform: translateY(12px);
-  transition:
-    opacity 0.5s var(--hover-ease),
-    transform 0.65s var(--hover-ease),
-    color 0.3s ease,
-    background-color 0.3s ease;
+  --submenu-transition:
+    opacity 0.5s var(--hover-ease), transform 0.65s var(--hover-ease),
+    color 0.3s ease, background-color 0.3s ease;
+  transition: var(--submenu-transition);
+}
+/* Business subcategories open smoothly regardless of the system motion setting. */
+.business-links a {
+  transition: var(--submenu-transition) !important;
+  transition-delay: 0s !important;
 }
 :is(.business-links, .industry-dropdown) > a:nth-child(2) {
   --link-order: 1;
@@ -3494,6 +3487,9 @@ body {
   opacity: 1;
   transform: translateY(0);
   transition-delay: calc(var(--link-order) * 40ms);
+}
+.business-card.is-open .business-links a {
+  transition-delay: calc(var(--link-order) * 60ms) !important;
 }
 @keyframes menu-content-in {
   from {

@@ -116,6 +116,20 @@ with sync_playwright() as p:
     mp.locator('.mega-children .text-link').click()
     expect(mp.locator('h1')).to_contain_text('СКАНЕРЫ')
     report['checks'].append('Mobile 390px: no horizontal overflow, menus and four page layouts')
+    animated = browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='no-preference')
+    ap = animated.new_page()
+    ap.on('pageerror', lambda e: report['errors'].append(str(e)))
+    ap.goto(base, wait_until='networkidle')
+    for index in [0,4,18]:
+        tile = ap.locator('.category-tile').nth(index)
+        tile.scroll_into_view_if_needed()
+        expect(tile).to_have_css('opacity', '1')
+    ap.goto(base + '/catalog', wait_until='networkidle')
+    ap.get_by_role('link', name='АНАДО — главная', exact=True).click()
+    expect(ap.locator('.category-tile')).to_have_count(19)
+    ap.locator('.category-tile').first.scroll_into_view_if_needed()
+    expect(ap.locator('.category-tile').first).to_have_css('opacity', '1')
+    report['checks'].append('Catalog tiles reveal after streaming, hydration and client navigation with animations enabled')
     assert not report['errors'], report['errors']
     assert not report['failedRequests'], report['failedRequests']
     browser.close()
