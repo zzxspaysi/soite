@@ -15,7 +15,7 @@ const brands = [
   { id: "mindeo", name: "MINDEO", sprite: 8 },
   { id: "tsc", name: "TSC", sprite: 9 },
   { id: "paytor", name: "PAYTOR", src: "/brands/paytor.webp" },
-  { id: "shtrih-m", name: "ШТРИХ-М", src: "/brands/shtrih-m.gif" },
+  { id: "massa-k", name: "Масса-К", src: "/brands/massa-k.svg" },
   { id: "zebra", name: "Zebra", src: "/brands/zebra.svg" },
 ];
 
@@ -44,6 +44,11 @@ export function BrandMarquee() {
                     {brand.src ? (
                       <img
                         src={brand.src}
+                        className={
+                          brand.id === "massa-k"
+                            ? "brand-logo-vertical"
+                            : undefined
+                        }
                         alt={duplicate ? "" : brand.name}
                         width={160}
                         height={56}

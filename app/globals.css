@@ -1801,34 +1801,67 @@
   .product-description {
     padding-bottom: 55px;
     max-width: 1000px;
+    color: #eaf3f6;
   }
   .product-description h2 {
     font-size: 29px;
     margin-bottom: 25px;
   }
   .product-description p {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.9;
-    color: #657e89;
+    color: #c4d5df;
     white-space: pre-line;
   }
-  .spec-table {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 12px;
+  .spec-table-wrap {
     margin-bottom: 22px;
+    border: 1px solid #385360;
+    border-radius: 18px;
+    background: #1b2e39;
+    overflow-x: auto;
+    scrollbar-color: #6b99ac #1a2b36;
+    overscroll-behavior-x: contain;
+  }
+  .spec-table-wrap:focus-visible {
+    outline: 3px solid #4abde0;
+    outline-offset: 4px;
+  }
+  .spec-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #edf6fa;
+    background: #1b2e39;
     table-layout: fixed;
   }
+  .spec-table-wide {
+    min-width: calc(var(--spec-columns) * 170px);
+  }
   .spec-table td {
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--line);
+    padding: 17px 22px;
+    border-bottom: 1px solid #344e5d;
     vertical-align: top;
     overflow-wrap: anywhere;
     white-space: pre-line;
   }
+  .spec-table td + td {
+    border-left: 1px solid #344e5d;
+  }
+  .spec-table tr:nth-child(even) td {
+    background: #203744;
+  }
   .spec-table td:first-child {
-    color: #738993;
-    background: #f7f9f9;
+    color: #c6dce6;
+    background: #203543;
+    font-weight: 500;
+  }
+  .spec-table tr:nth-child(even) td:first-child {
+    background: #25404e;
+  }
+  .spec-table tr:last-child td {
+    border-bottom: 0;
   }
   .product-documents {
     display: flex;
@@ -2909,14 +2942,14 @@
     margin-bottom: 20px;
   }
   .product-description p {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.95;
   }
   .spec-table {
-    font-size: 10px;
+    font-size: 13px;
   }
   .spec-table td {
-    padding: 12px 10px;
+    padding: 14px 12px;
   }
   .source-note {
     font-size: 9px;
@@ -3584,6 +3617,10 @@ body {
   object-fit: contain;
   mix-blend-mode: multiply;
 }
+.brand-item > .brand-logo-vertical {
+  height: 72px;
+  mix-blend-mode: normal;
+}
 .brand-logo-sprite {
   display: block;
   position: relative;
@@ -3642,6 +3679,9 @@ body {
   }
   .brand-item > img {
     height: 48px;
+  }
+  .brand-item > .brand-logo-vertical {
+    height: 64px;
   }
 }
 .catalog-home {
@@ -3833,10 +3873,6 @@ main > .shell:not(.section):not(.brand-strip),
 }
 .product-card {
   color: #17282f;
-}
-.spec-table {
-  color: #17282f;
-  background: #e8f0f1;
 }
 .business-heading h2 {
   letter-spacing: -0.025em;

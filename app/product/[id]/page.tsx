@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { FileText } from "lucide-react";
 import { getProduct } from "@/lib/catalog.mjs";
@@ -56,25 +57,50 @@ export default async function ProductPage({
       <section className="product-description" id="specifications">
         <h2>Характеристики</h2>
         {p.tables?.length ? (
-          p.tables.map((table, t) => (
-            <table className="spec-table" key={t}>
-              <tbody>
-                {table.map((row, r) => (
-                  <tr key={r}>
-                    {row.map((cell, c) => (
-                      <td
-                        key={c}
-                        colSpan={Math.min(cell.colspan || 1, 20)}
-                        rowSpan={Math.min(cell.rowspan || 1, 100)}
-                      >
-                        {cell.text}
-                      </td>
+          p.tables.map((table, t) => {
+            const columns = Math.max(
+              1,
+              ...table.map((row) =>
+                row.reduce(
+                  (total, cell) => total + Math.min(cell.colspan || 1, 20),
+                  0,
+                ),
+              ),
+            );
+            const wide = columns > 2;
+            return (
+              <div
+                className="spec-table-wrap"
+                key={t}
+                role={wide ? "region" : undefined}
+                aria-label={
+                  wide ? `Характеристики, таблица ${t + 1}` : undefined
+                }
+                tabIndex={wide ? 0 : undefined}
+              >
+                <table
+                  className={`spec-table${wide ? " spec-table-wide" : ""}`}
+                  style={{ "--spec-columns": columns } as CSSProperties}
+                >
+                  <tbody>
+                    {table.map((row, r) => (
+                      <tr key={r}>
+                        {row.map((cell, c) => (
+                          <td
+                            key={c}
+                            colSpan={Math.min(cell.colspan || 1, 20)}
+                            rowSpan={Math.min(cell.rowspan || 1, 100)}
+                          >
+                            {cell.text}
+                          </td>
+                        ))}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ))
+                  </tbody>
+                </table>
+              </div>
+            );
+          })
         ) : (
           <p>
             {p.specs ||
