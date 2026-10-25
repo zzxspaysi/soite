@@ -8,6 +8,7 @@ import {
   MapPin,
   Menu,
   Search,
+  UserRound,
   ShoppingBag,
   X,
   ChevronDown,
@@ -160,6 +161,13 @@ export function Header({ categories }: { categories: Category[] }) {
           </div>
         </div>
         <div className="nav-actions">
+          <Link
+            href="/account"
+            className="icon-button"
+            aria-label="Личный кабинет"
+          >
+            <UserRound size={21} />
+          </Link>
           <button
             className="icon-button"
             aria-label="Поиск по каталогу"

@@ -4139,3 +4139,169 @@ main > .shell:not(.section):not(.brand-strip),
     transition: transform 1.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }
+
+.brand-logo-tsc img {
+  margin-top: 6px;
+}
+.account-page {
+  padding-block: 48px 80px;
+  min-height: 65vh;
+}
+.account-page h1 {
+  margin-bottom: 24px;
+}
+.account-page h2 {
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+.account-panel {
+  background: #203543;
+  color: #eaf3f6;
+  border: 1px solid #385360;
+  border-radius: 18px;
+  padding: 26px;
+  margin-block: 22px;
+  overflow-wrap: anywhere;
+}
+.account-panel p {
+  margin-block: 14px;
+  color: #c4d5df;
+}
+.account-panel a,
+.account-actions a {
+  color: #77d5ed;
+}
+.auth-form {
+  max-width: 560px;
+  display: grid;
+  gap: 20px;
+}
+.auth-form label {
+  display: grid;
+  gap: 8px;
+}
+.auth-form input:not([type="checkbox"]),
+.account-panel textarea,
+.checkout-form select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #a6bdc8;
+  border-radius: 9px;
+  background: #edf4f6;
+  color: #173340;
+  font: inherit;
+}
+.auth-form .consent-label {
+  display: flex;
+  align-items: flex-start;
+  color: #c4d5df;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.auth-form .consent-label input {
+  flex: 0 0 auto;
+  margin-top: 4px;
+}
+.invoice-sheet h2 {
+  font-size: 24px;
+  letter-spacing: normal;
+}
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  margin-top: 20px;
+}
+.invoice-sheet {
+  background: white;
+  color: #111;
+  padding: 32px;
+  max-width: 1050px;
+  margin: 24px auto;
+  user-select: text;
+}
+.invoice-sheet h1 {
+  font-size: 25px;
+  letter-spacing: normal;
+}
+.invoice-sheet p {
+  margin-block: 14px;
+}
+.invoice-sheet table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+}
+.invoice-sheet td,
+.invoice-sheet th {
+  border: 1px solid #333;
+  padding: 8px;
+  overflow-wrap: anywhere;
+}
+.invoice-scroll {
+  overflow: auto;
+}
+@media print {
+  body {
+    background: white !important;
+  }
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  main,
+  .shell {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .invoice-sheet {
+    margin: 0;
+    padding: 0;
+  }
+  .invoice-scroll {
+    overflow: visible;
+  }
+  .invoice-sheet tr {
+    break-inside: avoid;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+}
+@media (max-width: 640px) {
+  .account-page {
+    padding-top: 28px;
+  }
+  .account-panel {
+    padding: 18px;
+  }
+  .site-header .nav-actions {
+    gap: 10px;
+  }
+  .invoice-sheet {
+    padding: 16px;
+  }
+  .invoice-sheet table {
+    min-width: 720px;
+  }
+}
+.account-page {
+  overflow-wrap: anywhere;
+}
+.account-page h1 {
+  font-size: clamp(30px, 4vw, 56px);
+}
+.account-panel input[type="file"] {
+  max-width: 100%;
+}
+.invoice-sheet {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.invoice-sheet .invoice-scroll {
+  max-width: 100%;
+}

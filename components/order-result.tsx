@@ -93,7 +93,10 @@ export function OrderResult({ id }: { id: string }) {
     return (
       <div className="empty-state" style={{ marginBottom: 60 }}>
         <h2>{error || "Загружаем заказ…"}</h2>
-        <p>Доступ к заказу открыт только по вашей персональной ссылке.</p>
+        <p>
+          Войдите в аккаунт, с которого оформлен заказ, или используйте
+          персональную ссылку старого заказа.
+        </p>
         <Link href="/catalog" className="btn btn-blue">
           В каталог
         </Link>
@@ -104,6 +107,10 @@ export function OrderResult({ id }: { id: string }) {
     canceled = order.status === "canceled";
   return (
     <div className="order-result">
+      <div className="account-actions">
+        <Link href="/account">Мои заказы</Link>
+        <Link href={`/account/invoice/${id}`}>Счёт на оплату</Link>
+      </div>
       <div className="order-status">
         {done ? <CheckCircle2 size={43} /> : <ShieldCheck size={43} />}
         <div className="eyebrow">

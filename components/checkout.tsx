@@ -13,7 +13,8 @@ export function Checkout({ mode }: { mode: string }) {
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [delivery, setDelivery] = useState("pickup"),
-    [payment, setPayment] = useState("bank_card");
+    [payment, setPayment] = useState("invoice"),
+    [buyerType, setBuyerType] = useState("person");
   const requestKey = useRef({ fingerprint: "", id: "" });
   useEffect(() => {
     if (!ready || !items.length) return;
@@ -51,6 +52,10 @@ export function Checkout({ mode }: { mode: string }) {
           phone: data.get("phone"),
           email: data.get("email"),
           company: data.get("company"),
+          buyerType,
+          inn: data.get("inn"),
+          kpp: data.get("kpp"),
+          legalAddress: data.get("legalAddress"),
           delivery,
           address: data.get("address"),
           consent: data.get("consent") === "on",
@@ -106,6 +111,16 @@ export function Checkout({ mode }: { mode: string }) {
             <h2>
               <span>1</span>Контактные данные
             </h2>
+            <label>
+              Покупатель
+              <select
+                value={buyerType}
+                onChange={(e) => setBuyerType(e.target.value)}
+              >
+                <option value="person">Физическое лицо</option>
+                <option value="business">Организация или ИП</option>
+              </select>
+            </label>
             <div className="form-fields">
               <label>
                 Ваше имя *
@@ -142,9 +157,10 @@ export function Checkout({ mode }: { mode: string }) {
                 />
               </label>
               <label>
-                Организация / ИНН
+                Организация / ИП
                 <input
                   name="company"
+                  required={buyerType === "business"}
                   autoComplete="organization"
                   maxLength={200}
                   placeholder="Для юридических лиц"
@@ -152,6 +168,41 @@ export function Checkout({ mode }: { mode: string }) {
               </label>
             </div>
           </section>
+          {buyerType === "business" && (
+            <section className="form-section">
+              <h2>Реквизиты для счёта</h2>
+              <div className="form-fields">
+                <label>
+                  ИНН *
+                  <input
+                    name="inn"
+                    required
+                    pattern="[0-9]{10}|[0-9]{12}"
+                    maxLength={12}
+                    inputMode="numeric"
+                  />
+                </label>
+                <label>
+                  КПП (для юридических лиц)
+                  <input
+                    name="kpp"
+                    pattern="[0-9]{9}"
+                    maxLength={9}
+                    inputMode="numeric"
+                  />
+                </label>
+                <label className="full">
+                  Юридический адрес *
+                  <input
+                    name="legalAddress"
+                    required
+                    minLength={8}
+                    maxLength={500}
+                  />
+                </label>
+              </div>
+            </section>
+          )}
           <section className="form-section">
             <h2>
               <span>2</span>Как получить заказ

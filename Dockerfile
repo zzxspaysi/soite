@@ -25,4 +25,4 @@ RUN chmod -R a+rX /app && mkdir -p /app/.next/cache \
     && chmod 700 /app/.local && chmod 600 /app/.local/*.sqlite
 USER node
 EXPOSE 10000
-CMD ["node", "scripts/serve-demo.mjs"]
+CMD ["node", "scripts/start-store.mjs"]

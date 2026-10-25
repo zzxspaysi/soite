@@ -6,6 +6,8 @@ import {
   applyVerifiedPayment,
 } from "@/lib/commerce.mjs";
 import { apiJson, apiError, limit, orderToken } from "@/lib/http.mjs";
+import { currentUser } from "@/lib/session";
+import { ownedOrder } from "@/lib/accounts.mjs";
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -14,7 +16,9 @@ export async function GET(
     limit(request, "order-read");
     const { id } = await params,
       token = orderToken(request);
-    let o = authorizedOrder(id, token);
+    const user = await currentUser();
+    let o = ownedOrder(id, user) || authorizedOrder(id, token);
+    if (o?.user_id && o.user_id !== user?.id) o = null;
     if (!o) throw new InputError("Заказ не найден.", 404);
     if (o.mode === "live" && o.status === "pending" && o.provider_id) {
       try {
@@ -24,7 +28,7 @@ export async function GET(
             "payments/" + encodeURIComponent(String(o.provider_id)),
           ),
         );
-        o = authorizedOrder(id, token);
+        o = ownedOrder(id, user) || authorizedOrder(id, token);
       } catch {}
     }
     return apiJson(publicOrder(o), {

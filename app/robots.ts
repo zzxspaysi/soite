@@ -5,7 +5,19 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       ...(live
-        ? { allow: "/", disallow: ["/cart", "/checkout", "/order/", "/api/"] }
+        ? {
+            allow: "/",
+            disallow: [
+              "/cart",
+              "/checkout",
+              "/order/",
+              "/api/",
+              "/account",
+              "/admin",
+              "/login",
+              "/register",
+            ],
+          }
         : { disallow: "/" }),
     },
     ...(live && process.env.SITE_URL

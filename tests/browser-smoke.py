@@ -1,6 +1,7 @@
 """Functional storefront checks. Run against a running app; artifacts stay in test-results/."""
 import json
 import os
+import uuid
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
@@ -66,6 +67,14 @@ with sync_playwright() as p:
     page.reload(wait_until='networkidle')
     expect(page.locator('.cart-row .quantity span')).to_have_text('2')
     page.get_by_role('link', name='Оформить заказ').click()
+    page.wait_for_url('**/login?next=checkout')
+    page.get_by_role('link', name='Создать аккаунт').click()
+    page.locator('input[name=name]').fill('Тестовый покупатель')
+    page.locator('input[name=email]').fill('smoke-' + uuid.uuid4().hex + '@example.invalid')
+    page.locator('input[name=password]').fill('Test-only-browser-password-123!')
+    page.locator('input[name=consent]').check()
+    page.get_by_role('button', name='Зарегистрироваться', exact=True).click()
+    page.wait_for_url('**/checkout')
     expect(page.locator('.checkout-layout')).to_be_visible()
     page.locator('input[name=name]').fill('Тестовый покупатель')
     page.locator('input[name=phone]').fill('+79990000000')

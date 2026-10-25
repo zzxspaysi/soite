@@ -57,7 +57,7 @@ export function BrandMarquee() {
                       />
                     ) : (
                       <span
-                        className="brand-logo-sprite"
+                        className={`brand-logo-sprite${brand.id === "tsc" ? " brand-logo-tsc" : ""}`}
                         role={duplicate ? undefined : "img"}
                         aria-label={duplicate ? undefined : brand.name}
                         style={

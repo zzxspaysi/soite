@@ -5,7 +5,10 @@ export const metadata = {
   title: "Оформление заказа",
   robots: { index: false, follow: false },
 };
-export default function CheckoutPage() {
+import { currentUser } from "@/lib/session";
+import { redirect } from "next/navigation";
+export default async function CheckoutPage() {
+  if (!(await currentUser())) redirect("/login?next=checkout");
   return (
     <div className="shell">
       <div className="page-heading">

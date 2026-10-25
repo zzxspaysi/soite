@@ -25,7 +25,11 @@ with sync_playwright() as p:
     csp = response.headers['content-security-policy']
     nonce = re.search(r"'nonce-([^']+)'", csp).group(1)
     assert "'strict-dynamic'" in csp and "'unsafe-eval'" not in csp
-    assert page.locator('script').evaluate_all('(scripts, nonce) => scripts.every(s => s.nonce === nonce)', nonce)
+    # Next can load additional chunks from a trusted script under strict-dynamic.
+    # Server-rendered scripts and every inline script must still carry the nonce.
+    initial_scripts=re.findall(r'<script\b[^>]*>',response.text())
+    assert initial_scripts and all(('nonce="'+nonce+'"') in tag for tag in initial_scripts)
+    assert page.locator('script:not([src])').evaluate_all('(scripts, nonce) => scripts.every(s => s.nonce === nonce)', nonce)
     assert nonce not in context.request.get(base).headers['content-security-policy']
     for header, value in {'referrer-policy': 'no-referrer', 'x-content-type-options': 'nosniff', 'x-frame-options': 'DENY'}.items():
         assert response.headers[header] == value
@@ -57,6 +61,13 @@ with sync_playwright() as p:
     assert page.locator('img[src*="evil.invalid"], .cart-row img[src="x"]').count() == 0
     report['checks'].append('Malformed cart recovery, escaped text and rejected remote cart image')
 
+    created_account=context.request.post(base+'/api/auth/register', data={'name':'Security test','email':'security-'+uuid.uuid4().hex+'@example.invalid','password':'Test-security-password-123!','consent':True}, headers={'Origin':base})
+    assert created_account.status==200, created_account.text()
+    # Use a real catalog item for checkout after testing an intentionally malformed cart.
+    page.evaluate("localStorage.removeItem('anado-cart-v1')")
+    page.goto(base + '/product/ee4274ae23a0e67a', wait_until='networkidle')
+    page.get_by_role('button', name='В корзину', exact=True).click()
+    expect(page.get_by_role('status')).to_contain_text('Товар добавлен')
     page.goto(base + '/checkout', wait_until='networkidle')
     expect(page.locator('.demo-notice')).to_be_visible()
 
@@ -68,8 +79,11 @@ with sync_playwright() as p:
     order_path = '/api/orders/' + data['order']['id']
     token = parse_qs(urlsplit(data['url']).fragment)['token'][0]
     assert not urlsplit(data['url']).query
-    assert api.get(base + order_path).status == 404
-    assert api.get(base + order_path + '?token=' + token).status == 404
+    assert api.get(base + order_path).status == 200
+    outsider=browser.new_context().request
+    assert outsider.get(base + order_path).status == 404
+    assert outsider.get(base + order_path + '?token=' + token).status == 404
+    assert outsider.get(base + order_path, headers={'Authorization':'Bearer '+token}).status == 404
     authorized = api.get(base + order_path, headers={'Authorization': 'Bearer ' + token})
     assert authorized.status == 200 and authorized.headers['cache-control'] == 'no-store'
     order_requests = []
@@ -81,7 +95,7 @@ with sync_playwright() as p:
     expect(page.locator('.order-status h1')).to_have_text('Заказ готов к оплате')
     assert not urlsplit(page.url).query and urlsplit(page.url).fragment
     assert all(not request.query for request in order_requests)
-    report['checks'].append('Order privacy, fragment link, Bearer-only API, no caching and legacy migration')
+    report['checks'].append('Order privacy, fragment link, owner session required for new orders, no caching and legacy migration')
 
     assert api.get(base + '/_next/image', params={'url': '/api/health', 'w': '64', 'q': '75'}).status == 400
     assert api.post(base + '/api/orders', data=payload, headers={'Origin': 'https://evil.invalid'}).status == 403

@@ -42,13 +42,25 @@ export async function POST(request: Request) {
     )
       throw new InputError("orderId and documentId required");
     const o = db
-      .prepare("SELECT id FROM orders WHERE id=? AND mode='live'")
+      .prepare(
+        "SELECT id,one_c_document_id FROM orders WHERE id=? AND mode='live'",
+      )
       .get(body.orderId);
     if (!o) throw new InputError("Order not found", 404);
-    db.prepare("UPDATE orders SET exported_at=? WHERE id=?").run(
-      new Date().toISOString(),
-      body.orderId,
-    );
+    if (o.one_c_document_id && o.one_c_document_id !== body.documentId)
+      throw new InputError("Order already linked to another document", 409);
+    const saved = db
+      .prepare(
+        "UPDATE orders SET exported_at=coalesce(exported_at,?),one_c_document_id=? WHERE id=? AND (one_c_document_id IS NULL OR one_c_document_id=?)",
+      )
+      .run(
+        new Date().toISOString(),
+        body.documentId,
+        body.orderId,
+        body.documentId,
+      );
+    if (!saved.changes)
+      throw new InputError("Order already linked to another document", 409);
     return apiJson({ ok: true });
   } catch (e) {
     return apiError(e);

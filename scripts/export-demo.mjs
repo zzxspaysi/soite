@@ -25,10 +25,16 @@ const result = spawnSync(process.execPath, ["scripts/prepare-catalog.mjs"], {
 });
 if (result.status !== 0) throw new Error("Catalog import failed");
 const db = new DatabaseSync(database);
-for (const table of ["orders", "sync_batches"]) {
+for (const table of [
+  "orders",
+  "sync_batches",
+  "users",
+  "sessions",
+  "order_invoices",
+]) {
   if (db.prepare(`SELECT count(*) n FROM ${table}`).get().n !== 0)
     throw new Error(
-      "Demo seed must not contain orders or synchronization history",
+      "Demo seed must not contain accounts, sessions, invoices, orders or synchronization history",
     );
 }
 db.exec("PRAGMA wal_checkpoint(TRUNCATE)");

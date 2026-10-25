@@ -1,3 +1,5 @@
+import { currentUser } from "@/lib/session";
+import { ownedOrder } from "@/lib/accounts.mjs";
 import { authorizedOrder, InputError, publicOrder } from "@/lib/commerce.mjs";
 import { db } from "@/lib/db.mjs";
 import {
@@ -16,7 +18,9 @@ export async function POST(
     limit(request, "demo-payment");
     const token = orderToken(request),
       { id } = await params;
-    const o = authorizedOrder(id, token);
+    const user = await currentUser();
+    let o = ownedOrder(id, user) || authorizedOrder(id, token);
+    if (o?.user_id && o.user_id !== user?.id) o = null;
     if (!o) throw new InputError("Заказ не найден.", 404);
     if (
       o.mode !== "demo" ||
@@ -26,9 +30,12 @@ export async function POST(
     db.prepare(
       "UPDATE orders SET status='demo_paid' WHERE id=? AND mode='demo' AND status='pending'",
     ).run(id);
-    return apiJson(publicOrder(authorizedOrder(id, token)), {
-      headers: { "Cache-Control": "no-store" },
-    });
+    return apiJson(
+      publicOrder(db.prepare("SELECT * FROM orders WHERE id=?").get(id)),
+      {
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
   } catch (e) {
     return apiError(e);
   }
