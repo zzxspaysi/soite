@@ -4,6 +4,7 @@ import { currentUser } from "@/lib/session";
 import { db } from "@/lib/db.mjs";
 import { money } from "@/lib/db.mjs";
 import { Logout } from "@/components/auth-form";
+import { adminSetupState, isAdminSetupOwner } from "@/lib/admin-setup.mjs";
 export const metadata = {
   title: "Мои заказы",
   robots: { index: false, follow: false },
@@ -32,6 +33,11 @@ export default async function Page() {
       <div className="account-actions">
         <Logout />
         {user.role === "admin" && <Link href="/admin">Администрирование</Link>}
+        {user.role !== "admin" &&
+          isAdminSetupOwner(user) &&
+          adminSetupState() !== "complete" && (
+            <Link href="/admin/setup">Настроить администратора</Link>
+          )}
       </div>
       {!orders.length && (
         <div className="account-panel">

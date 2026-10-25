@@ -1,5 +1,5 @@
 """Isolated local first-admin setup, tested through the demo entrypoint."""
-import os, tempfile, subprocess, time, secrets, json
+import os, tempfile, subprocess, time, secrets, json, signal
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
@@ -12,7 +12,15 @@ with tempfile.TemporaryDirectory(prefix='anado-admin-ui-') as directory:
     env={**os.environ,'ANADO_DB':directory+'/db.sqlite','PAYMENT_MODE':'demo','PORT':'3006','ADMIN_SETUP_EMAIL':email,'ADMIN_SETUP_TOKEN':token}
     for key in ['RENDER_EXTERNAL_URL','YOOKASSA_AUTHORIZATION','YOOKASSA_SECRET_KEY','YOOKASSA_SHOP_ID']:
         env.pop(key,None)
-    server=subprocess.Popen(['node','scripts/start-store.mjs'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    server=subprocess.Popen(['node','scripts/start-store.mjs'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
+    def stop_server():
+        server.terminate()
+        try:
+            server.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            # Chromium can keep connections alive during Next's graceful shutdown.
+            os.killpg(server.pid, signal.SIGKILL)
+            server.wait(timeout=5)
     def wait_ready(request):
         for _ in range(100):
             try:
@@ -31,6 +39,10 @@ with tempfile.TemporaryDirectory(prefix='anado-admin-ui-') as directory:
             credentials={'name':'Другой покупатель','email':'other@example.invalid','password':password,'consent':True}
             assert outsider.request.post(base+'/api/auth/register',data=credentials,headers=headers).status==200
             assert outsider.request.post(base+'/api/admin/setup',data={'token':token,'password':password},headers=headers).status==403
+            wrong=outsider.new_page();wrong.goto(base+'/admin/setup')
+            expect(wrong.locator('main [role=alert]')).to_contain_text('Email этого аккаунта не совпадает')
+            assert wrong.locator('input[name=token]').count()==0
+            wrong.close()
             page=owner.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
             response=page.goto(base+'/admin/setup',wait_until='networkidle')
             assert token not in response.text()
@@ -45,6 +57,15 @@ with tempfile.TemporaryDirectory(prefix='anado-admin-ui-') as directory:
             page.get_by_role('button',name='Зарегистрироваться',exact=True).click()
             page.wait_for_url('**/admin/setup')
             expect(page.get_by_text(email,exact=True)).to_be_visible()
+            page.goto(base+'/admin',wait_until='networkidle')
+            expect(page.get_by_role('heading',name='Доступ к админ-панели')).to_be_visible()
+            expect(page.locator('main [role=alert]')).to_contain_text('нет прав администратора')
+            assert page.locator('input[type=file]').count()==0
+            page.get_by_role('link',name='Настроить администратора',exact=True).click()
+            page.wait_for_url('**/admin/setup')
+            page.goto(base+'/account')
+            page.get_by_role('link',name='Настроить администратора',exact=True).click()
+            page.wait_for_url('**/admin/setup')
             for width in [320,390,1440]:
                 page.set_viewport_size({'width':width,'height':900})
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),width
@@ -70,25 +91,41 @@ with tempfile.TemporaryDirectory(prefix='anado-admin-ui-') as directory:
             assert closed.locator('input[name=token]').count()==0
             assert owner.request.post(base+'/api/admin/setup',data={'token':token,'password':password},headers={**headers,'X-Forwarded-For':'127.0.0.2'}).status==409
             checks.append('Admin access granted, session rotated and previous sessions revoked; completed page and API reject repeat setup')
+            page.goto(base+'/account')
+            page.get_by_role('link',name='Администрирование',exact=True).click()
+            page.wait_for_url('**/admin')
+            page.goto(base+'/account');page.get_by_role('button',name='Выйти',exact=True).click()
+            page.wait_for_url('**/login')
+            page.goto(base+'/admin');page.wait_for_url('**/login?next=admin')
+            page.get_by_role('link',name='Создать аккаунт').click();page.wait_for_url('**/register?next=admin')
+            page.get_by_role('link',name='Уже есть аккаунт? Войти').click();page.wait_for_url('**/login?next=admin')
+            page.locator('input[name=email]').fill(email);page.locator('input[name=password]').fill(password)
+            page.get_by_role('button',name='Войти',exact=True).click();page.wait_for_url('**/admin')
+            expect(page.locator('h1')).to_have_text('Управление магазином')
+            wrong=outsider.new_page();wrong.goto(base+'/admin')
+            expect(wrong.locator('main [role=alert]')).to_contain_text('нет прав администратора')
+            assert wrong.locator('input[type=file]').count()==0
+            wrong.get_by_role('button',name='Войти в другой аккаунт').click();wrong.wait_for_url('**/login?next=admin');wrong.close()
+            checks.append('Admin destination preserved through login/register switch and logout/login; role retained, account link works, unprivileged page gives actionable access message without admin data')
             # Same persistent database, changed key, fresh process: completion must survive.
-            server.terminate();server.wait(timeout=10)
+            stop_server()
             env['ADMIN_SETUP_TOKEN']=secrets.token_hex(32)
-            server=subprocess.Popen(['node','scripts/start-store.mjs'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            server=subprocess.Popen(['node','scripts/start-store.mjs'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
             wait_ready(owner.request)
             page.goto(base+'/admin/setup');page.wait_for_url('**/admin')
             closed.goto(base+'/admin/setup');expect(closed.get_by_text('Администратор уже назначен.',exact=False)).to_be_visible()
             checks.append('Same database retains completion and admin access after restart and key rotation')
             # A fresh deployment with no setup configuration must remain closed.
-            server.terminate();server.wait(timeout=10)
+            stop_server()
             env['ANADO_DB']=directory+'/disabled.sqlite'
             env.pop('ADMIN_SETUP_EMAIL');env.pop('ADMIN_SETUP_TOKEN')
-            server=subprocess.Popen(['node','scripts/start-store.mjs'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            server=subprocess.Popen(['node','scripts/start-store.mjs'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
             wait_ready(owner.request)
-            page.goto(base+'/admin/setup');expect(page.get_by_text('ADMIN_SETUP_EMAIL',exact=True)).to_be_visible()
+            page.goto(base+'/admin/setup');expect(page.get_by_text('ADMIN_SETUP_EMAIL',exact=True)).to_be_visible();expect(page.locator('main [role=alert]')).to_contain_text('не задана переменная ADMIN_SETUP_EMAIL')
             assert page.locator('input[name=token]').count()==0
             assert not errors,errors
             browser.close()
             checks.append('Fresh unconfigured deployment only shows configuration instructions; no browser errors')
     finally:
-        server.terminate();server.wait(timeout=10)
+        stop_server()
 print(json.dumps({'checks':checks},ensure_ascii=False,indent=2))

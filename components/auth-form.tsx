@@ -1,6 +1,12 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+const destinations: Record<string, string> = {
+  account: "/account",
+  checkout: "/checkout",
+  admin: "/admin",
+  "admin-setup": "/admin/setup",
+};
 export function AuthForm({
   register = false,
   next = "account",
@@ -29,11 +35,7 @@ export function AuthForm({
       const d = await r.json();
       if (!r.ok) throw Error(d.error);
       window.location.assign(
-        next === "checkout"
-          ? "/checkout"
-          : next === "admin-setup"
-            ? "/admin/setup"
-            : "/account",
+        Object.hasOwn(destinations, next) ? destinations[next] : "/account",
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Ошибка входа");
@@ -94,7 +96,9 @@ export function AuthForm({
       <Link
         href={
           (register ? "/login" : "/register") +
-          (["checkout", "admin-setup"].includes(next) ? "?next=" + next : "")
+          (["checkout", "admin", "admin-setup"].includes(next)
+            ? "?next=" + next
+            : "")
         }
       >
         {register ? "Уже есть аккаунт? Войти" : "Создать аккаунт"}
@@ -102,16 +106,25 @@ export function AuthForm({
     </form>
   );
 }
-export function Logout() {
+export function Logout({
+  next = "account",
+  label = "Выйти",
+}: { next?: string; label?: string } = {}) {
   return (
     <button
       className="btn btn-outline"
       onClick={async () => {
         const r = await fetch("/api/auth/logout", { method: "POST" });
-        if (r.ok) window.location.assign("/login");
+        if (r.ok)
+          window.location.assign(
+            "/login" +
+              (["checkout", "admin", "admin-setup"].includes(next)
+                ? "?next=" + next
+                : ""),
+          );
       }}
     >
-      Выйти
+      {label}
     </button>
   );
 }

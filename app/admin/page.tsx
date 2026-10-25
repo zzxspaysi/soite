@@ -1,16 +1,52 @@
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 import { currentUser } from "@/lib/session";
 import { db, money } from "@/lib/db.mjs";
 import { AdminImport } from "@/components/admin-import";
 import { safeExternalUrl } from "@/lib/urls.mjs";
+import { adminSetupState } from "@/lib/admin-setup.mjs";
+import { Logout } from "@/components/auth-form";
 export const metadata = {
   title: "Управление магазином",
   robots: { index: false, follow: false },
 };
 export default async function Page() {
   const user = await currentUser();
-  if (!user) redirect("/login");
-  if (user.role !== "admin") notFound();
+  if (!user) redirect("/login?next=admin");
+  if (user.role !== "admin") {
+    const setup = adminSetupState();
+    return (
+      <div className="shell account-page">
+        <h1>Доступ к админ-панели</h1>
+        <section className="account-panel">
+          <p>
+            Вы вошли как <strong>{String(user.email)}</strong>.
+          </p>
+          <p role="alert">У этого аккаунта нет прав администратора.</p>
+          {setup === "complete" ? (
+            <p>
+              Администратор уже назначен. Войдите в тот аккаунт, которому вы
+              выдали права на странице настройки.
+            </p>
+          ) : (
+            <>
+              <p>
+                Переменные в Render включают первоначальную настройку. Чтобы
+                выдать права аккаунту, завершите её на сайте.
+              </p>
+              <Link href="/admin/setup" className="btn btn-blue">
+                Настроить администратора
+              </Link>
+            </>
+          )}
+          <div className="account-actions">
+            <Logout next="admin" label="Войти в другой аккаунт" />
+            <Link href="/account">Личный кабинет</Link>
+          </div>
+        </section>
+      </div>
+    );
+  }
   const orders = db
     .prepare(
       "SELECT id,created_at,customer_json,total,status,mode,exported_at FROM orders ORDER BY created_at DESC LIMIT 100",

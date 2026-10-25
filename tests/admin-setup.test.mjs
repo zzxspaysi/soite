@@ -7,8 +7,12 @@ import { spawn } from "node:child_process";
 const directory = mkdtempSync(join(tmpdir(), "anado-admin-setup-"));
 process.env.ANADO_DB = join(directory, "test.sqlite");
 const { db } = await import("../lib/db.mjs");
-const { adminSetupState, completeAdminSetup } =
-  await import("../lib/admin-setup.mjs");
+const {
+  adminSetupState,
+  completeAdminSetup,
+  adminSetupProblem,
+  isAdminSetupOwner,
+} = await import("../lib/admin-setup.mjs");
 const { newSession, sessionUser } = await import("../lib/accounts.mjs");
 const owner = { id: "owner", email: "owner@example.invalid" };
 const stranger = { id: "stranger", email: "stranger@example.invalid" };
@@ -43,6 +47,19 @@ test("first-admin setup is closed unless a strong token and valid owner email ar
   process.env.ADMIN_SETUP_TOKEN = token;
   process.env.ADMIN_SETUP_EMAIL = "invalid";
   assert.equal(adminSetupState(), "disabled");
+});
+test("configuration diagnostics distinguish missing or invalid fields without revealing secrets", () => {
+  assert.equal(adminSetupProblem(), null);
+  assert.equal(isAdminSetupOwner(owner), true);
+  assert.equal(isAdminSetupOwner(stranger), false);
+  process.env.ADMIN_SETUP_TOKEN = "x".repeat(31);
+  assert.match(adminSetupProblem(), /32/);
+  assert.ok(!adminSetupProblem().includes(process.env.ADMIN_SETUP_TOKEN));
+  process.env.ADMIN_SETUP_TOKEN = token + "\n";
+  assert.match(adminSetupProblem(), /пробел или перенос/);
+  delete process.env.ADMIN_SETUP_TOKEN;
+  assert.match(adminSetupProblem(), /не задана переменная ADMIN_SETUP_TOKEN/);
+  assert.equal(isAdminSetupOwner(owner), false);
 });
 test("registration order, missing/wrong token and wrong account never grant admin", () => {
   assert.equal(adminSetupState(), "ready");
