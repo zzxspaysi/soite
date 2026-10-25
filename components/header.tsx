@@ -100,20 +100,23 @@ export function Header({ categories }: { categories: Category[] }) {
                     : section.title}
                 {section.items.length > 1 && <ChevronDown size={13} />}
               </button>
-              {navigation === section.id && (
-                <div className="industry-dropdown" id={`nav-${section.id}`}>
-                  {section.items.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={businessHref(item)}
-                      onClick={() => setNavigation(null)}
-                    >
-                      {item.title}
-                      <ArrowUpRight size={14} />
-                    </Link>
-                  ))}
-                </div>
-              )}
+              <div
+                className={`industry-dropdown ${navigation === section.id ? "is-open" : ""}`}
+                id={`nav-${section.id}`}
+                inert={navigation !== section.id}
+                aria-hidden={navigation !== section.id}
+              >
+                {section.items.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={businessHref(item)}
+                    onClick={() => setNavigation(null)}
+                  >
+                    {item.title}
+                    <ArrowUpRight size={14} />
+                  </Link>
+                ))}
+              </div>
             </div>
           ))}
         </nav>
@@ -144,14 +147,17 @@ export function Header({ categories }: { categories: Category[] }) {
           >
             Поддержка <ChevronDown size={13} />
           </button>
-          {navigation === "support" && (
-            <div className="industry-dropdown" id="nav-support">
-              <Link href="/services">Сервис и услуги</Link>
-              <Link href="/contacts">Контакты</Link>
-              <Link href="/delivery">Доставка и оплата</Link>
-              <Link href="/about">О компании</Link>
-            </div>
-          )}
+          <div
+            className={`industry-dropdown ${navigation === "support" ? "is-open" : ""}`}
+            id="nav-support"
+            inert={navigation !== "support"}
+            aria-hidden={navigation !== "support"}
+          >
+            <Link href="/services">Сервис и услуги</Link>
+            <Link href="/contacts">Контакты</Link>
+            <Link href="/delivery">Доставка и оплата</Link>
+            <Link href="/about">О компании</Link>
+          </div>
         </div>
         <div className="nav-actions">
           <button
@@ -210,13 +216,23 @@ export function Header({ categories }: { categories: Category[] }) {
                   key={c.id}
                   className={c.id === active ? "selected" : ""}
                   onClick={() => setActive(c.id)}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType === "mouse") setActive(c.id);
+                  }}
+                  onFocus={() => setActive(c.id)}
+                  aria-pressed={c.id === active}
+                  aria-controls="catalog-subcategories"
                 >
                   {c.name}
                   <ArrowUpRight size={15} />
                 </button>
               ))}
             </div>
-            <div className="mega-children">
+            <div
+              className="mega-children"
+              id="catalog-subcategories"
+              key={active}
+            >
               <div className="eyebrow">Каталог ANADO</div>
               <h2>{current?.name}</h2>
               <Link

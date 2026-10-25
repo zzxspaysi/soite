@@ -22,7 +22,6 @@ export function HeroCarousel() {
   const [position, setPosition] = useState(1);
   const [animated, setAnimated] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [hovered, setHovered] = useState(false);
   const [keyboardFocus, setKeyboardFocus] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(true);
   const [inView, setInView] = useState(true);
@@ -83,12 +82,7 @@ export function HeroCarousel() {
   }, [position, animated, reducedMotion, finishTransition]);
 
   const rotating =
-    !paused &&
-    !hovered &&
-    !keyboardFocus &&
-    !reducedMotion &&
-    inView &&
-    tabVisible;
+    !paused && !keyboardFocus && !reducedMotion && inView && tabVisible;
   useEffect(() => {
     if (!rotating) return;
     // Count from the start of a slide change, including its transition time.
@@ -105,10 +99,6 @@ export function HeroCarousel() {
       aria-roledescription="карусель"
       aria-label="Новости ANADO"
       tabIndex={0}
-      onPointerEnter={(event) => {
-        if (event.pointerType === "mouse") setHovered(true);
-      }}
-      onPointerLeave={() => setHovered(false)}
       onFocusCapture={(event) => {
         setKeyboardFocus(
           event.target instanceof HTMLElement &&
