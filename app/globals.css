@@ -3980,3 +3980,27 @@ main > .shell:not(.section):not(.brand-strip),
 .checkout-layout .summary-note {
   color: #526d78;
 }
+
+.promo-motion-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  padding: 12px 22px;
+  color: #bed0d9;
+  font-size: 12px;
+}
+.promo-motion-option button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #4a6c73;
+  color: #d6f78a;
+  background: #1d3944;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* A visitor can explicitly enable news transitions on this device. */
+  .promo-carousel[data-motion-enabled="true"] .promo-track.is-moving {
+    transition: transform 1.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+}

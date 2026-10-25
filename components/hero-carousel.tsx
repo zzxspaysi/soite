@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { homeNews as slides } from "@/lib/home-news";
+import { readNewsMotion, saveNewsMotion } from "@/lib/news-motion";
 const count = slides.length;
 const AUTOPLAY_INTERVAL_MS = 6666;
 const banners = [slides[count - 1], ...slides, slides[0]];
@@ -23,7 +24,11 @@ export function HeroCarousel() {
   const [animated, setAnimated] = useState(false);
   const [paused, setPaused] = useState(false);
   const [keyboardFocus, setKeyboardFocus] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(true);
+  const [systemReducedMotion, setSystemReducedMotion] = useState<
+    boolean | null
+  >(null);
+  const [motionEnabled, setMotionEnabled] = useState(false);
+  const reducedMotion = (systemReducedMotion ?? true) && !motionEnabled;
   const [inView, setInView] = useState(true);
   const [tabVisible, setTabVisible] = useState(true);
   const carousel = useRef<HTMLDivElement>(null);
@@ -52,9 +57,10 @@ export function HeroCarousel() {
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const syncMotion = () => setReducedMotion(preference.matches);
+    const syncMotion = () => setSystemReducedMotion(preference.matches);
     const syncVisibility = () => setTabVisible(!document.hidden);
     syncMotion();
+    setMotionEnabled(readNewsMotion());
     syncVisibility();
     preference.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncVisibility);
@@ -95,10 +101,12 @@ export function HeroCarousel() {
     <div
       ref={carousel}
       className="promo-carousel"
+      data-motion-enabled={motionEnabled ? "true" : undefined}
       role="region"
       aria-roledescription="карусель"
       aria-label="Новости ANADO"
       tabIndex={0}
+      onPointerDown={() => setKeyboardFocus(false)}
       onFocusCapture={(event) => {
         setKeyboardFocus(
           event.target instanceof HTMLElement &&
@@ -254,6 +262,27 @@ export function HeroCarousel() {
           </button>
         )}
       </div>
+      {systemReducedMotion && (
+        <div className="promo-motion-option">
+          <span>
+            {motionEnabled
+              ? "Плавная смена новостей включена."
+              : "Плавная смена отключена настройками устройства."}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              saveNewsMotion(!motionEnabled);
+              setMotionEnabled(!motionEnabled);
+              setPaused(false);
+            }}
+          >
+            {motionEnabled
+              ? "Как в настройках устройства"
+              : "Включить плавные переходы"}
+          </button>
+        </div>
+      )}
       <p
         className="sr-only"
         role="status"
