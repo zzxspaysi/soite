@@ -141,7 +141,11 @@ export default async function Catalog({
                 defaultValue={params.sort || ""}
                 aria-label="Сортировка"
               >
-                <option value="">По названию</option>
+                <option value="">
+                  {category?.id === "online-kassy__smart-terminals"
+                    ? "Сначала АТОЛ и Эвотор"
+                    : "По названию"}
+                </option>
                 <option value="price-asc">Сначала дешевле</option>
                 <option value="price-desc">Сначала дороже</option>
               </select>
