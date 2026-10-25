@@ -1529,32 +1529,63 @@
     accent-color: var(--blue);
   }
   .subcategory-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 26px;
   }
   .chip {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    border: 1px solid var(--line);
-    border-radius: 30px;
-    padding: 8px 13px;
-    font-size: 10px;
+    justify-content: space-between;
+    gap: 14px;
+    min-width: 0;
+    min-height: 68px;
+    border: 1px solid #b8d4de;
+    border-radius: 14px;
+    padding: 15px 16px;
+    background: #e5f1f5;
+    color: #173b4a;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
     transition:
-      background var(--hover-duration) var(--hover-ease),
-      color var(--hover-duration),
-      border-color var(--hover-duration);
+      background-color var(--hover-duration) var(--hover-ease),
+      color var(--hover-duration) var(--hover-ease),
+      border-color var(--hover-duration) var(--hover-ease);
   }
   .chip:hover,
   .chip.active {
-    background: #e9f5f8;
-    color: var(--blue);
-    border-color: #c7e6ed;
+    background: #006d8e;
+    color: #fff;
+    border-color: #008cbb;
   }
-  .chip span {
-    color: #9aadb3;
+  .chip:focus-visible {
+    outline: 3px solid var(--lime);
+    outline-offset: 3px;
+  }
+  .chip-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .chip-count {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    min-width: 34px;
+    min-height: 30px;
+    padding: 4px 8px;
+    border-radius: 9px;
+    background: #d9edbe;
+    color: #2c4714;
+    font-size: 14px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+  .chip:hover .chip-count,
+  .chip.active .chip-count {
+    background: var(--lime);
+    color: #203608;
   }
   .catalog-results .product-photo {
     height: 200px;
@@ -2236,6 +2267,9 @@
   }
 }
 @media (max-width: 1150px) {
+  .subcategory-chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .shell {
     width: calc(100% - 48px);
   }
@@ -2880,12 +2914,13 @@
     gap: 10px;
   }
   .subcategory-chips {
-    gap: 6px;
-    margin-bottom: 17px;
+    gap: 10px;
+    margin-bottom: 22px;
   }
   .chip {
-    font-size: 9px;
-    padding: 6px 9px;
+    min-height: 58px;
+    font-size: 15px;
+    padding: 13px 14px;
   }
   .pagination a,
   .pagination span {
@@ -3090,6 +3125,11 @@
   [data-reveal] {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+@media (max-width: 520px) {
+  .subcategory-chips {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 /* Catalog layout refinements. */

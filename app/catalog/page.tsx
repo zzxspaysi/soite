@@ -111,18 +111,18 @@ export default async function Catalog({
         <div className="catalog-results" id="catalog-results">
           <CategorySelect categories={tree} value={params.category || ""} />
           {children.length > 0 && (
-            <div className="subcategory-chips">
+            <nav className="subcategory-chips" aria-label="Подразделы каталога">
               {children.map((c) => (
                 <Link
                   className="chip"
                   href={`/catalog?category=${c.id}`}
                   key={c.id}
                 >
-                  {c.name}
-                  <span>{c.count}</span>
+                  <span className="chip-label">{c.name}</span>
+                  <span className="chip-count">{c.count}</span>
                 </Link>
               ))}
-            </div>
+            </nav>
           )}
           <div className="catalog-tools">
             <form action="/catalog">
