@@ -42,7 +42,7 @@ with sync_playwright() as p:
 
     assert page.goto(base + '/catalog?category=online-kassy', wait_until='networkidle').status == 200
     expect(page.locator('.product-card')).to_have_count(24)
-    assert page.locator('.subcategory-chips .chip').count() == 8
+    assert page.locator('.subcategory-chips .chip').count() == 9
     page.screenshot(path=str(out / 'catalog-desktop.png'))
     page.get_by_role('link', name='Следующая страница').click()
     expect(page.locator('.result-note')).to_contain_text('страница 2')

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Fragment } from "react";
+import { permanentRedirect } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
 import { categories, listProducts } from "@/lib/catalog.mjs";
 import { ProductCard } from "@/components/product-card";
 import { CategorySelect } from "@/components/category-select";
 import type { Category, Product } from "@/lib/types";
+import { storefrontCategoryId } from "@/lib/cash-register-sections.mjs";
 export const metadata = { title: "Каталог оборудования" };
 export default async function Catalog({
   searchParams,
@@ -15,6 +17,16 @@ export default async function Catalog({
   const params = Object.fromEntries(
     Object.entries(raw).map(([k, v]) => [k, typeof v === "string" ? v : ""]),
   );
+  if (
+    params.category &&
+    storefrontCategoryId(params.category) !== params.category
+  ) {
+    const canonical = new URLSearchParams({
+      ...params,
+      category: storefrontCategoryId(params.category),
+    });
+    permanentRedirect("/catalog?" + canonical.toString());
+  }
   const tree = categories() as unknown as Category[],
     category = tree.find((c) => c.id === params.category),
     parent = category?.parent
