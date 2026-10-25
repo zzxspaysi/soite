@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BusinessSolutions } from "@/components/business-solutions";
+import { BrandMarquee } from "@/components/brand-marquee";
 import {
   ArrowUpRight,
   Barcode,
@@ -50,17 +51,7 @@ export default function Home() {
         <HeroCarousel />
       </section>
       <BusinessSolutions />
-      <div className="brand-strip shell">
-        <span>Технологии ведущих производителей</span>
-        <div>
-          <b>АТОЛ</b>
-          <b className="evotor-word">эвотор</b>
-          <b>MERTECH</b>
-          <b className="mindeo-word">mindeo</b>
-          <b>ШТРИХ-М</b>
-          <b>ZEBRA</b>
-        </div>
-      </div>
+      <BrandMarquee />
       <section className="section catalog-home" id="catalog">
         <div className="shell">
           <div className="section-heading" data-reveal>
