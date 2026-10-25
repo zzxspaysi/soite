@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 
 import { homeNews as slides } from "@/lib/home-news";
-import { readNewsMotion, saveNewsMotion } from "@/lib/news-motion";
 const count = slides.length;
 const AUTOPLAY_INTERVAL_MS = 6666;
 const banners = [slides[count - 1], ...slides, slides[0]];
@@ -24,11 +23,6 @@ export function HeroCarousel() {
   const [animated, setAnimated] = useState(false);
   const [paused, setPaused] = useState(false);
   const [keyboardFocus, setKeyboardFocus] = useState(false);
-  const [systemReducedMotion, setSystemReducedMotion] = useState<
-    boolean | null
-  >(null);
-  const [motionEnabled, setMotionEnabled] = useState(false);
-  const reducedMotion = (systemReducedMotion ?? true) && !motionEnabled;
   const [inView, setInView] = useState(true);
   const [tabVisible, setTabVisible] = useState(true);
   const carousel = useRef<HTMLDivElement>(null);
@@ -41,28 +35,16 @@ export function HeroCarousel() {
     setAnimated(false);
     setPosition((current) => normalize(current));
   }, []);
-  const show = useCallback(
-    (next: number) => {
-      if (moving.current) return;
-      if (reducedMotion) {
-        setPosition(normalize(next));
-        return;
-      }
-      moving.current = true;
-      setAnimated(true);
-      setPosition(next);
-    },
-    [reducedMotion],
-  );
+  const show = useCallback((next: number) => {
+    if (moving.current) return;
+    moving.current = true;
+    setAnimated(true);
+    setPosition(next);
+  }, []);
 
   useEffect(() => {
-    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const syncMotion = () => setSystemReducedMotion(preference.matches);
     const syncVisibility = () => setTabVisible(!document.hidden);
-    syncMotion();
-    setMotionEnabled(readNewsMotion());
     syncVisibility();
-    preference.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncVisibility);
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
@@ -70,7 +52,6 @@ export function HeroCarousel() {
     );
     if (carousel.current) observer.observe(carousel.current);
     return () => {
-      preference.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncVisibility);
       observer.disconnect();
     };
@@ -78,17 +59,12 @@ export function HeroCarousel() {
 
   useEffect(() => {
     if (!animated) return;
-    if (reducedMotion) {
-      finishTransition();
-      return;
-    }
     // Finish even if a background tab or interrupted CSS transition skips its event.
     const timer = setTimeout(finishTransition, 1400);
     return () => clearTimeout(timer);
-  }, [position, animated, reducedMotion, finishTransition]);
+  }, [position, animated, finishTransition]);
 
-  const rotating =
-    !paused && !keyboardFocus && !reducedMotion && inView && tabVisible;
+  const rotating = !paused && !keyboardFocus && inView && tabVisible;
   useEffect(() => {
     if (!rotating) return;
     // Count from the start of a slide change, including its transition time.
@@ -101,7 +77,6 @@ export function HeroCarousel() {
     <div
       ref={carousel}
       className="promo-carousel"
-      data-motion-enabled={motionEnabled ? "true" : undefined}
       role="region"
       aria-roledescription="карусель"
       aria-label="Новости ANADO"
@@ -247,46 +222,21 @@ export function HeroCarousel() {
             </button>
           ))}
         </div>
-        {!reducedMotion && (
-          <button
-            className="promo-playback"
-            data-carousel-control="playback"
-            aria-label={
-              paused
-                ? "Продолжить смену слайдов"
-                : "Приостановить смену слайдов"
-            }
-            onClick={() => setPaused((value) => !value)}
-          >
-            {paused ? <Play size={15} /> : <Pause size={15} />}
-          </button>
-        )}
+        <button
+          className="promo-playback"
+          data-carousel-control="playback"
+          aria-label={
+            paused ? "Продолжить смену слайдов" : "Приостановить смену слайдов"
+          }
+          onClick={() => setPaused((value) => !value)}
+        >
+          {paused ? <Play size={15} /> : <Pause size={15} />}
+        </button>
       </div>
-      {systemReducedMotion && (
-        <div className="promo-motion-option">
-          <span>
-            {motionEnabled
-              ? "Плавная смена новостей включена."
-              : "Плавная смена отключена настройками устройства."}
-          </span>
-          <button
-            type="button"
-            onClick={() => {
-              saveNewsMotion(!motionEnabled);
-              setMotionEnabled(!motionEnabled);
-              setPaused(false);
-            }}
-          >
-            {motionEnabled
-              ? "Как в настройках устройства"
-              : "Включить плавные переходы"}
-          </button>
-        </div>
-      )}
       <p
         className="sr-only"
         role="status"
-        aria-live={paused || keyboardFocus || reducedMotion ? "polite" : "off"}
+        aria-live={paused || keyboardFocus ? "polite" : "off"}
         aria-atomic="true"
       >
         {active + 1} из {count}: {slides[active].name}

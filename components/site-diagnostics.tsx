@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { readNewsMotion, saveNewsMotion } from "@/lib/news-motion";
 
 type Result = {
   browser: string;
@@ -10,7 +9,6 @@ type Result = {
   mouse: boolean;
   slideTransition: string;
   stylesheets: number;
-  newsMotionEnabled: boolean;
 };
 
 export function SiteDiagnostics({
@@ -27,8 +25,6 @@ export function SiteDiagnostics({
     // Use the real carousel class to test the deployed CSS and browser preference.
     const container = document.createElement("div");
     container.className = "promo-carousel";
-    const newsMotionEnabled = readNewsMotion();
-    if (newsMotionEnabled) container.dataset.motionEnabled = "true";
     const probe = document.createElement("div");
     probe.className = "promo-track is-moving";
     probe.style.cssText =
@@ -44,7 +40,6 @@ export function SiteDiagnostics({
       mouse: matchMedia("(hover: hover) and (pointer: fine)").matches,
       slideTransition,
       stylesheets: document.styleSheets.length,
-      newsMotionEnabled,
     });
   }, []);
 
@@ -55,7 +50,7 @@ export function SiteDiagnostics({
       ? [
           "JavaScript: работает",
           `Уменьшение движения: ${result.reducedMotion ? "включено" : "выключено"}`,
-          `Эффекты новостей: ${result.newsMotionEnabled ? "включены на сайте" : "как в настройках устройства"}`,
+          "Эффекты новостей: включены автоматически",
           `Указатель мыши: ${result.mouse ? "да" : "нет"}`,
           `Длительность перехода новостей: ${result.slideTransition}`,
           `Таблиц стилей: ${result.stylesheets}`,
@@ -80,23 +75,12 @@ export function SiteDiagnostics({
       />
       <p role="status">
         {result
-          ? result.reducedMotion && !result.newsMotionEnabled
-            ? "Браузер запрашивает уменьшение движения. Текущая версия сайта в этом режиме отключает плавные переходы и автоматическую смену новостей."
-            : result.slideTransition === "1.15s"
-              ? "Плавный переход разрешён и присутствует в загруженных стилях."
-              : "Длительность перехода отличается от ожидаемой. Этот результат поможет найти причину."
+          ? result.slideTransition === "1.15s"
+            ? "Плавная смена новостей включена автоматически, независимо от системной настройки уменьшения движения."
+            : "Длительность перехода отличается от ожидаемой. Этот результат поможет найти причину."
           : "Если эта надпись не меняется, JavaScript на странице не запустился."}
       </p>
       <div className="sector-actions">
-        {result?.reducedMotion && !result.newsMotionEnabled && (
-          <Link
-            href="/"
-            className="btn btn-blue"
-            onClick={() => saveNewsMotion(true)}
-          >
-            Включить плавную смену новостей
-          </Link>
-        )}
         <button
           type="button"
           className="btn btn-blue"
